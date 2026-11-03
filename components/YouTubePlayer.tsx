@@ -19,10 +19,18 @@ export default function YouTubePlayer({
 
   const startPolling = () => {
     stopPolling();
-    intervalRef.current = setInterval(async () => {
+    intervalRef.current = setInterval(() => {
       if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
-        const time = await playerRef.current.getCurrentTime();
-        onTimeUpdate(time);
+        try {
+          const res = playerRef.current.getCurrentTime();
+          if (res && typeof res.then === 'function') {
+            res.then((time: number) => onTimeUpdate(Number(time) || 0));
+          } else if (typeof res === 'number') {
+            onTimeUpdate(res);
+          }
+        } catch (err) {
+          console.warn('Polling error getting current time:', err);
+        }
       }
     }, 500);
   };
@@ -54,7 +62,16 @@ export default function YouTubePlayer({
     } else {
       stopPolling();
       if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
-        playerRef.current.getCurrentTime().then((time: number) => onTimeUpdate(time));
+        try {
+          const res = playerRef.current.getCurrentTime();
+          if (res && typeof res.then === 'function') {
+            res.then((time: number) => onTimeUpdate(Number(time) || 0));
+          } else if (typeof res === 'number') {
+            onTimeUpdate(res);
+          }
+        } catch (err) {
+          console.warn('Failed to get current time on state change:', err);
+        }
       }
     }
   };
