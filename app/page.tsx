@@ -203,11 +203,18 @@ export default function SensaiDashboard() {
             const ingestData = await ingestRes.json();
 
             if (!ingestRes.ok) {
-              toast.error(`Target bypassed: Closed captions disabled for "${video.title}"`, {
+              toast.error(`Target bypassed: Unable to access "${video.title}"`, {
                 className:
                   '!bg-zinc-900 !border-red-900/60 !text-red-300 font-mono text-xs rounded-none',
               });
               continue;
+            }
+
+            if (ingestData.isSynthesized) {
+              toast.info(`Captions disabled for "${video.title}": Extracted via Deep Synthesis`, {
+                className:
+                  '!bg-zinc-900 !border-amber-900/60 !text-amber-300 font-mono text-xs rounded-none',
+              });
             }
 
             if (i === 0) detectedDomain = ingestData.domainType;
@@ -306,11 +313,18 @@ export default function SensaiDashboard() {
       const ingestData = await ingestRes.json();
 
       if (!ingestRes.ok) {
-        toast.error('Target inaccessible: Closed captions are disabled for this video.', {
+        toast.error(ingestData.error || 'Ingestion pipeline encountered a breakdown.', {
           className:
             '!bg-zinc-900 !border-red-900/80 !text-red-400 font-mono text-xs rounded-none shadow-2xl',
         });
         throw new Error(ingestData.error || 'Ingestion pipeline encountered a breakdown.');
+      }
+
+      if (ingestData.isSynthesized) {
+        toast.info('Closed captions unavailable: Synthesizing curriculum via deep video intelligence...', {
+          className:
+            '!bg-zinc-900 !border-amber-900/60 !text-amber-300 font-mono text-xs rounded-none',
+        });
       }
 
       // Step 3: Phase 3 - Domain-Specific Curriculum Extraction

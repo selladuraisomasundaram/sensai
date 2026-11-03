@@ -42,7 +42,8 @@ CRITICAL JSON SPECIFICATION (RFC 8259):
 1. Return ONLY valid, parseable JSON. Do not wrap in markdown fences (\`\`\`json). No conversational preamble or postscript.
 2. Inside strings (especially code snippets or explanations), NEVER use raw line breaks. All newlines MUST be escaped as \\n.
 3. All quotes inside code strings must be escaped as \\" or written using single quotes.
-4. No trailing commas anywhere in objects or arrays.`;
+4. No trailing commas anywhere in objects or arrays.
+5. If the source is marked as (NO CLOSED CAPTIONS - SYLLABUS SYNTHESIS MODE), use the verified video title, runtime, chapters, and syllabus to construct a chronologically realistic, high-yield curriculum spanning the video duration with sequential start_timestamp and end_timestamp (e.g. 00:00 to 02:30, 02:30 to 05:06, etc.).`;
 
   // Pillar 1: technical_coding
   if (domain === 'technical_coding') {

@@ -44,6 +44,83 @@ async function fetchVideoMetadata(videoId: string): Promise<{ title: string }> {
 }
 
 /**
+ * Extracts chapter markers/timestamps from creator video description if present.
+ */
+function extractChaptersFromDescription(description: string, totalDurationSeconds: number) {
+  const lines = description.split('\n');
+  const chapters: Array<{ title: string; start: string; startSec: number }> = [];
+  const timeRegex = /(?:^|\s)(?:(\d{1,2}):)?(\d{1,2}):(\d{2})(?:\s*[-–—|:]\s*|\s+)(.+)$/;
+
+  for (const line of lines) {
+    const match = line.trim().match(timeRegex);
+    if (match) {
+      const hours = match[1] ? parseInt(match[1], 10) : 0;
+      const minutes = parseInt(match[2], 10);
+      const seconds = parseInt(match[3], 10);
+      const startSec = hours * 3600 + minutes * 60 + seconds;
+      const title = match[4].trim();
+      if (title && (!totalDurationSeconds || startSec < totalDurationSeconds)) {
+        chapters.push({
+          title,
+          start: `${hours > 0 ? hours + ':' : ''}${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`,
+          startSec,
+        });
+      }
+    }
+  }
+  return chapters;
+}
+
+/**
+ * Retrieves full video metadata, syllabus notes, and keywords via YouTube Innertube
+ * player API when closed captions are unavailable.
+ */
+async function fetchVideoFallbackDetails(videoId: string) {
+  try {
+    const res = await fetch('https://www.youtube.com/youtubei/v1/player?prettyPrint=false', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      },
+      body: JSON.stringify({
+        context: {
+          client: {
+            clientName: 'WEB',
+            clientVersion: '2.20240101.01.00',
+            hl: 'en',
+            gl: 'US',
+          },
+        },
+        videoId: videoId,
+      }),
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    const details = data.videoDetails || {};
+
+    const durationSec = parseInt(details.lengthSeconds || '0', 10);
+    const mins = Math.floor(durationSec / 60);
+    const secs = durationSec % 60;
+    const durationFormatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    return {
+      title: details.title || `YouTube Target [${videoId}]`,
+      author: details.author || 'YouTube Creator',
+      durationSeconds: durationSec,
+      durationFormatted,
+      description: details.shortDescription || '',
+      keywords: Array.isArray(details.keywords) ? details.keywords : [],
+    };
+  } catch (err) {
+    console.warn('Fallback metadata extraction exception:', err);
+    return null;
+  }
+}
+
+/**
  * Classifier Node: Invokes user's LLM using BYOK from Authorization header.
  * Categorizes content into the 5 universal pillars of informative learning.
  */
@@ -170,45 +247,79 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 4. Ingestion: Fetch Transcript & Timestamps
+    // 4. Ingestion: Fetch Transcript or Fallback to Deep Metadata & Syllabus Synthesis
     let transcriptItems: Array<{ text: string; duration: number; offset: number }> = [];
+    let fullTranscriptText = '';
+    let isSynthesized = false;
+    let videoTitle = `YouTube Target [${videoId}]`;
+
+    // Step 4A: Attempt standard closed-captions extraction
     try {
       transcriptItems = await YoutubeTranscript.fetchTranscript(videoId);
+      if (transcriptItems && transcriptItems.length > 0) {
+        fullTranscriptText = transcriptItems.map((item) => item.text).join(' ');
+      }
     } catch (transcriptErr: any) {
-      console.warn('Transcript extraction failed for videoId:', videoId, transcriptErr?.message);
-
-      // Fail-safe: Update DB status to failed
-      await supabase
-        .from('courses')
-        .update({ status: 'failed' })
-        .eq('id', courseId);
-
-      return NextResponse.json(
-        {
-          error: 'Target inaccessible: Closed captions are disabled for this video.',
-          details: transcriptErr?.message || 'CAPTIONS_DISABLED',
-        },
-        { status: 422 }
+      console.info(
+        `Closed captions unavailable for [${videoId}]. Engaging Deep Metadata & Syllabus Synthesis Node.`
       );
     }
 
-    if (!transcriptItems || transcriptItems.length === 0) {
-      await supabase
-        .from('courses')
-        .update({ status: 'failed' })
-        .eq('id', courseId);
+    // Step 4B: If captions disabled or empty, synthesize from deep Innertube metadata
+    if (!fullTranscriptText || fullTranscriptText.trim().length === 0) {
+      const fallbackDetails = await fetchVideoFallbackDetails(videoId);
 
-      return NextResponse.json(
-        { error: 'Target inaccessible: Closed captions are disabled for this video.' },
-        { status: 422 }
+      if (!fallbackDetails) {
+        // Video is completely private, removed, or unavailable
+        await supabase
+          .from('courses')
+          .update({ status: 'failed' })
+          .eq('id', courseId);
+
+        return NextResponse.json(
+          {
+            error: 'Target inaccessible: The video is private, removed, or unavailable on YouTube.',
+            details: 'VIDEO_UNAVAILABLE',
+          },
+          { status: 422 }
+        );
+      }
+
+      isSynthesized = true;
+      videoTitle = fallbackDetails.title;
+
+      // Check for timestamp chapters in description
+      const chapters = extractChaptersFromDescription(
+        fallbackDetails.description,
+        fallbackDetails.durationSeconds
       );
+
+      const chapterText =
+        chapters.length > 0
+          ? `Verified Timeline & Creator Chapters:\n` +
+            chapters.map((c) => `- ${c.start} : ${c.title}`).join('\n')
+          : `No explicit timeline in description. Evenly distribute modules across duration: 00:00 to ${fallbackDetails.durationFormatted}.`;
+
+      fullTranscriptText = `=== TARGET BRIEFING (NO CLOSED CAPTIONS - SYLLABUS SYNTHESIS MODE) ===
+Video Title: ${fallbackDetails.title}
+Creator / Channel: ${fallbackDetails.author}
+Total Runtime: ${fallbackDetails.durationFormatted} (${fallbackDetails.durationSeconds} seconds)
+Target Tags: ${fallbackDetails.keywords.slice(0, 15).join(', ')}
+
+${chapterText}
+
+Creator Description & Detailed Syllabus Notes:
+${fallbackDetails.description.slice(0, 4000)}
+=== END BRIEFING ===`;
+
+      transcriptItems = [
+        { text: fallbackDetails.title, duration: fallbackDetails.durationSeconds, offset: 0 },
+      ];
+    } else {
+      // 5. Metadata Resolution for captioned video
+      const meta = await fetchVideoMetadata(videoId);
+      videoTitle = meta.title;
     }
-
-    // Assemble text & interval stream
-    const fullTranscriptText = transcriptItems.map((item) => item.text).join(' ');
-
-    // 5. Metadata Resolution
-    const { title: videoTitle } = await fetchVideoMetadata(videoId);
 
     // 6. The Classifier Node: Sample first 1000 words
     const sampleWords = fullTranscriptText.split(/\s+/).slice(0, 1000).join(' ');
@@ -240,6 +351,7 @@ export async function POST(req: NextRequest) {
       videoTitle,
       domainType: classifiedDomain,
       status: 'processing',
+      isSynthesized,
       transcript: fullTranscriptText,
       transcriptItems: transcriptItems,
       transcriptWordCount: fullTranscriptText.split(/\s+/).length,
