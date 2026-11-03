@@ -53,3 +53,5 @@ pnpm-debug.log*
 scratch/
 *.tmp
 
+
+next-env.d.ts

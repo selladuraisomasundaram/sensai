@@ -27,7 +27,7 @@ Sensai dynamically classifies and extracts curriculums according to the content 
 * **Fault-Tolerant JSON Sanitizer & Repair**: Automatically fixes RFC 8259 defects (unescaped code newlines, quotes, trailing commas, and truncated response streams).
 
 ### 4. 📜 Playlist Queue Infiltration (Mega-Courses)
-* Detects YouTube playlists (`?list=...`) via `ytpl`.
+* Detects YouTube playlists (`?list=...`) and extracts curriculum targets via direct Innertube endpoints.
 * Processes videos sequentially on the client side, eliminating serverless execution timeouts (504s) and rate-limit spikes while building a unified Mega-Course module-by-module.
 
 ### 5. 🥷 Stealth Discipline & Progression System
@@ -63,7 +63,7 @@ Sensai dynamically classifies and extracts curriculums according to the content 
 | **Styling** | [Tailwind CSS](https://tailwindcss.com/) (Class-based dark/light theming) |
 | **Database & Auth** | [Supabase](https://supabase.com/) (PostgreSQL + PostgREST + GoTrue OAuth) |
 | **AI / LLMs** | Google Gemini (Flash / Pro), Anthropic Claude, OpenAI GPT-4o-mini |
-| **Video & Extraction** | `youtube-transcript`, `ytpl`, `react-youtube` |
+| **Video & Extraction** | `youtube-transcript`, YouTube Innertube API, `react-youtube` |
 | **Syntax Highlighting**| `react-syntax-highlighter` (vscDarkPlus theme) |
 | **Notifications** | `sonner` (Dark minimalist toasts) |
 | **Email Relay** | `nodemailer` (SMTP) |
@@ -184,7 +184,7 @@ sensai/
 │   │   ├── feedback/route.ts   # Nodemailer SMTP feedback dispatcher
 │   │   ├── generate/route.ts   # 5-Pillar LLM extractor & JSON repair
 │   │   ├── ingest/route.ts     # Caption extraction & domain classification
-│   │   ├── playlist/route.ts   # ytpl YouTube playlist extractor
+│   │   ├── playlist/route.ts   # Native YouTube playlist extractor
 │   │   └── progress/route.ts   # Server-side XP & streak engine
 │   ├── course/[id]/page.tsx    # Live course viewer & video sync player
 │   ├── globals.css             # Tailwind dark/light theme definitions
