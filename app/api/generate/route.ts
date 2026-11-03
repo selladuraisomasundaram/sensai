@@ -15,6 +15,23 @@ export const maxDuration = 60; // Allow sufficient compute time for heavy LLM ge
  * Builds domain-specific system instruction and JSON structural contract across 5 learning pillars.
  */
 function buildSystemPrompt(domain: VideoDomain): string {
+  const commonConceptsContract = `Each module MUST extract 1 to 3 "atomic_concepts" (the discrete, atomic units of knowledge taught in this segment for spaced-repetition mastery):
+[
+  {
+    "name": "Atomic Concept Name (e.g. Closure Lexical Scope, Capacitor Charging Curve, CSS Grid Template)",
+    "summary": "Crisp 1-2 sentence core definition or rule that the student must master.",
+    "start_sec": 125,
+    "end_sec": 210,
+    "check_question": {
+      "question": "Diagnostic multiple-choice question testing true understanding of this specific concept?",
+      "options": ["Accurate Option", "Plausible Distractor B", "Plausible Distractor C", "Plausible Distractor D"],
+      "correct_answer_index": 0,
+      "explanation": "Brief explanation of why this answer is correct."
+    }
+  }
+]
+start_sec and end_sec MUST be integer numbers of seconds from the beginning of the video where this specific concept is demonstrated.`;
+
   const commonQuizContract = `Each module must contain "module_quiz": 1-2 challenging multiple-choice questions:
 [
   {
@@ -36,6 +53,8 @@ The root JSON object must also contain "final_quiz": 3-5 comprehensive questions
 ]`;
 
   const commonFooter = `
+${commonConceptsContract}
+
 ${commonQuizContract}
 
 CRITICAL JSON SPECIFICATION (RFC 8259):
@@ -66,6 +85,7 @@ You must output a strictly valid JSON object adhering to this schema:
         }
       ],
       "challenge_mission": "A practical hands-on mission the student must implement in their local IDE.",
+      "atomic_concepts": [ ... 1-3 concepts with start_sec, end_sec, summary, and check_question ... ],
       "module_quiz": [ ... 1-2 questions ... ]
     }
   ],
@@ -98,6 +118,7 @@ You must output a strictly valid JSON object adhering to this schema:
         "Unpacked conclusion 1",
         "Counter-argument or nuance 2"
       ],
+      "atomic_concepts": [ ... 1-3 concepts with start_sec, end_sec, summary, and check_question ... ],
       "module_quiz": [ ... 1-2 questions ... ]
     }
   ],
@@ -122,6 +143,7 @@ You must output a strictly valid JSON object adhering to this schema:
       "core_theories": ["Primary theoretical concept 1", "Theoretical concept 2"],
       "formulas_or_dates": ["Mathematical theorem/equation, historical date, or foundational law"],
       "real_world_application": "How this theoretical framework directly applies to modern systems or empirical phenomena.",
+      "atomic_concepts": [ ... 1-3 concepts with start_sec, end_sec, summary, and check_question ... ],
       "module_quiz": [ ... 1-2 questions ... ]
     }
   ],
@@ -147,6 +169,7 @@ You must output a strictly valid JSON object adhering to this schema:
       "step_by_step_actions": ["Precise physical action 1", "Physical action 2"],
       "safety_warnings": ["Crucial electrical, heat, chemical, or mechanical hazard precautions"],
       "troubleshooting": ["Common defect, short-circuit, or calibration fix if the step fails"],
+      "atomic_concepts": [ ... 1-3 concepts with start_sec, end_sec, summary, and check_question ... ],
       "module_quiz": [ ... 1-2 questions ... ]
     }
   ],
@@ -175,6 +198,7 @@ You must output a strictly valid JSON object adhering to this schema:
           "action": "Description of the operation triggered by this hotkey"
         }
       ],
+      "atomic_concepts": [ ... 1-3 concepts with start_sec, end_sec, summary, and check_question ... ],
       "module_quiz": [ ... 1-2 questions ... ]
     }
   ],
@@ -531,6 +555,88 @@ export async function POST(req: NextRequest) {
     if (moduleError) {
       console.error('Supabase module insertion failure:', moduleError);
       throw new Error(`Failed to persist modules: ${moduleError.message}`);
+    }
+
+    // 7b. Optional Phase 1 Spaced Repetition Concepts Persistence
+    try {
+      if (insertedModules && insertedModules.length > 0) {
+        const conceptsToInsert: any[] = [];
+
+        insertedModules.forEach((insertedMod, idx) => {
+          const rawMod = parsedPayload.modules[idx];
+          const rawConcepts = rawMod?.atomic_concepts;
+          if (Array.isArray(rawConcepts) && rawConcepts.length > 0) {
+            rawConcepts.forEach((c) => {
+              if (!c || !c.name) return;
+              const startSec =
+                typeof c.start_sec === 'number'
+                  ? c.start_sec
+                  : parseTimestampToSeconds(c.start_sec || (rawMod.start_timestamp ?? '00:00'));
+              const rawEndSec =
+                typeof c.end_sec === 'number'
+                  ? c.end_sec
+                  : parseTimestampToSeconds(c.end_sec || (rawMod.end_timestamp ?? '00:00'));
+              const endSec = rawEndSec > startSec ? rawEndSec : startSec + 60;
+
+              conceptsToInsert.push({
+                course_id: courseId,
+                module_id: insertedMod.id,
+                name: String(c.name).trim(),
+                summary: c.summary ? String(c.summary).trim() : null,
+                start_sec: startSec,
+                end_sec: endSec,
+                metadata: {
+                  check_question: c.check_question || null,
+                },
+              });
+            });
+          }
+        });
+
+        if (conceptsToInsert.length > 0) {
+          const { data: insertedConcepts, error: conceptError } = await supabase
+            .from('concepts')
+            .insert(conceptsToInsert)
+            .select();
+
+          if (conceptError) {
+            console.warn(
+              '[Concepts] Optional concepts table write skipped (migration may not have run):',
+              conceptError.message
+            );
+          } else if (insertedConcepts && insertedConcepts.length > 0) {
+            const questionsToInsert: any[] = [];
+            insertedConcepts.forEach((cRow) => {
+              const checkQ = (cRow.metadata as any)?.check_question;
+              if (checkQ && checkQ.question && Array.isArray(checkQ.options)) {
+                questionsToInsert.push({
+                  concept_id: cRow.id,
+                  type: 'mcq',
+                  prompt: checkQ.question,
+                  options: checkQ.options,
+                  correct_answer:
+                    typeof checkQ.correct_answer_index === 'number' &&
+                    checkQ.options[checkQ.correct_answer_index] !== undefined
+                      ? checkQ.options[checkQ.correct_answer_index]
+                      : checkQ.options[0],
+                  explanation: checkQ.explanation || null,
+                });
+              }
+            });
+
+            if (questionsToInsert.length > 0) {
+              const { error: qError } = await supabase
+                .from('concept_questions')
+                .insert(questionsToInsert);
+              if (qError) {
+                console.warn('[Concepts] Optional questions table write skipped:', qError.message);
+              }
+            }
+          }
+        }
+      }
+    } catch (conceptErr: any) {
+      console.warn('[Concepts] Concept extraction persistence bypassed:', conceptErr?.message || conceptErr);
     }
 
     // 8. Update Courses Table: Final Trial Quiz & Status

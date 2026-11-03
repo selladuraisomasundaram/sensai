@@ -79,6 +79,7 @@ export interface RawExtractedModule {
   start_timestamp: string;
   end_timestamp: string;
   module_quiz: QuizQuestion[];
+  atomic_concepts?: AtomicConcept[];
 
   // 1. Technical Coding
   architectural_objective?: string;
@@ -138,8 +139,66 @@ export interface ModuleRow {
     title?: string;
     start_timestamp: string;
     end_timestamp: string;
+    atomic_concepts?: AtomicConcept[];
   };
   module_quiz: QuizQuestion[];
   is_completed: boolean;
   created_at?: string;
 }
+
+// ==========================================
+// Spaced Repetition & Concept Mastery Models
+// ==========================================
+
+export interface AtomicConcept {
+  name: string;
+  summary: string;
+  start_sec: number;
+  end_sec: number;
+  check_question?: QuizQuestion;
+}
+
+export interface ConceptRow {
+  id: string;
+  course_id: string;
+  module_id?: string;
+  name: string;
+  summary: string;
+  start_sec: number;
+  end_sec: number;
+  created_at?: string;
+}
+
+export interface ConceptQuestionRow {
+  id: string;
+  concept_id: string;
+  question: string;
+  options: string[];
+  correct_answer_index: number;
+  explanation: string;
+  created_at?: string;
+}
+
+export interface ConceptMasteryRow {
+  id: string;
+  user_id: string;
+  concept_id: string;
+  mastery_score: number;
+  ease_factor: number;
+  interval_days: number;
+  repetitions: number;
+  due_at: string;
+  last_reviewed_at?: string;
+  created_at?: string;
+}
+
+export interface ReviewLogRow {
+  id: string;
+  user_id: string;
+  concept_id: string;
+  question_id?: string;
+  grade: number;
+  was_correct: boolean;
+  reviewed_at?: string;
+}
+

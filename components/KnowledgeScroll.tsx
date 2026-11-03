@@ -11,6 +11,7 @@ import type {
   AcademicLectureContent,
   DiyHardwareContent,
   SoftwareWalkthroughContent,
+  AtomicConcept,
 } from '@/types/course';
 import { parseTimestampToSeconds } from '@/lib/timeUtils';
 import QuizView from '@/components/QuizView';
@@ -37,6 +38,13 @@ import {
   Compass,
   Sparkles,
 } from 'lucide-react';
+
+function formatSecondsToMMSS(seconds?: number): string {
+  if (typeof seconds !== 'number' || isNaN(seconds)) return '00:00';
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
 
 interface KnowledgeScrollProps {
   modules: ModuleRow[];
@@ -191,7 +199,11 @@ export default function KnowledgeScroll({
     ((content as TechnicalCodingContent).code_blocks?.length > 0 ||
       Boolean((content as TechnicalCodingContent).challenge_mission));
 
+  const hasAtomicConcepts =
+    Array.isArray(content?.atomic_concepts) && content.atomic_concepts.length > 0;
+
   const hasKeyConcepts =
+    hasAtomicConcepts ||
     (domainType === 'podcast_debate' &&
       ((content as PodcastDebateContent).speaker_perspectives?.length > 0 ||
         (content as PodcastDebateContent).key_takeaways?.length > 0)) ||
@@ -402,6 +414,60 @@ export default function KnowledgeScroll({
                 </div>
               </div>
 
+              {/* Atomic Dojo Mastery Units (Spaced Repetition Checkpoints) */}
+              {hasAtomicConcepts && (
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Target className="w-4 h-4 text-red-600 dark:text-red-500" />
+                      <span className="text-xs font-ninja tracking-wider uppercase font-bold text-stone-900 dark:text-white">
+                        Atomic Mastery Units
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-stone-500 dark:text-zinc-500">
+                      Spaced Repetition Checkpoints
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2.5">
+                    {content.atomic_concepts.map((concept: AtomicConcept, cIdx: number) => {
+                      const startSec = typeof concept.start_sec === 'number' ? concept.start_sec : 0;
+                      const endSec = typeof concept.end_sec === 'number' ? concept.end_sec : startSec + 60;
+                      return (
+                        <div
+                          key={cIdx}
+                          className="group relative p-3.5 sm:p-4 rounded-xl border border-stone-200 dark:border-zinc-800/80 bg-stone-50/70 dark:bg-zinc-900/40 hover:border-red-500/50 dark:hover:border-red-500/50 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        >
+                          <div className="space-y-1 sm:max-w-[70%]">
+                            <div className="flex items-center space-x-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-red-500 shrink-0" />
+                              <h4 className="font-ninja text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                {concept.name}
+                              </h4>
+                            </div>
+                            {concept.summary && (
+                              <p className="font-sans text-xs leading-relaxed text-stone-600 dark:text-zinc-400 pl-3.5">
+                                {concept.summary}
+                              </p>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => onSeek(startSec)}
+                            className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border border-red-200 dark:border-red-950/60 bg-red-50/80 dark:bg-red-950/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-400 transition-all shadow-sm shrink-0 self-start sm:self-center"
+                            title={`Jump video player to ${formatSecondsToMMSS(startSec)}`}
+                          >
+                            <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
+                            <span>{formatSecondsToMMSS(startSec)} – {formatSecondsToMMSS(endSec)}</span>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Teaser CTA to explore concepts or code */}
               <div className="pt-2 flex items-center justify-between text-xs font-ninja text-stone-500 dark:text-zinc-500">
                 <span>Select tabs above for detailed code and quizzes</span>
@@ -422,6 +488,60 @@ export default function KnowledgeScroll({
           {/* ======================================================== */}
           {activeTab === 'concepts' && (
             <div className="space-y-6">
+              {/* Atomic Dojo Mastery Units (Discrete Recall Units) */}
+              {hasAtomicConcepts && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Target className="w-4 h-4 text-red-600 dark:text-red-500" />
+                      <span className="text-xs font-ninja tracking-wider uppercase font-bold text-stone-900 dark:text-white">
+                        Atomic Concept Checkpoints
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-stone-500 dark:text-zinc-500">
+                      Click timestamp to seek video
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3">
+                    {content.atomic_concepts.map((concept: AtomicConcept, cIdx: number) => {
+                      const startSec = typeof concept.start_sec === 'number' ? concept.start_sec : 0;
+                      const endSec = typeof concept.end_sec === 'number' ? concept.end_sec : startSec + 60;
+                      return (
+                        <div
+                          key={cIdx}
+                          className="group relative p-4 rounded-xl border border-stone-200 dark:border-zinc-800/80 bg-stone-50/70 dark:bg-zinc-900/40 hover:border-red-500/50 dark:hover:border-red-500/50 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"
+                        >
+                          <div className="space-y-1.5 sm:max-w-[70%]">
+                            <div className="flex items-center space-x-2">
+                              <span className="w-2 h-2 rounded-full bg-red-600 dark:bg-red-500 shrink-0" />
+                              <h4 className="font-ninja text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                {concept.name}
+                              </h4>
+                            </div>
+                            {concept.summary && (
+                              <p className="font-sans text-xs sm:text-sm leading-relaxed text-stone-700 dark:text-zinc-300 pl-4">
+                                {concept.summary}
+                              </p>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => onSeek(startSec)}
+                            className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border border-red-200 dark:border-red-950/60 bg-red-50/80 dark:bg-red-950/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-400 transition-all shadow-sm shrink-0 self-start sm:self-center"
+                            title={`Jump video player to ${formatSecondsToMMSS(startSec)}`}
+                          >
+                            <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
+                            <span>{formatSecondsToMMSS(startSec)} – {formatSecondsToMMSS(endSec)}</span>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Technical / Academic / Podcast / DIY / Software specifics */}
               {domainType === 'academic_lecture' && (
                 <div className="space-y-4">
