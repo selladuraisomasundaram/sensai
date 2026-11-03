@@ -381,24 +381,24 @@ export default function SensaiDashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-zinc-200 font-mono py-10 px-4">
-      <Toaster theme="dark" position="bottom-right" />
+    <main className="min-h-screen bg-stone-50 dark:bg-black text-stone-800 dark:text-zinc-200 font-sans py-10 px-4 transition-colors duration-200">
+      <Toaster position="bottom-right" />
       <div className="max-w-3xl mx-auto space-y-6">
         
         {/* Top Header */}
-        <header className="border border-zinc-900 bg-zinc-950 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <header className="border border-stone-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-white text-sm">
+            <div className="w-8 h-8 bg-stone-100 dark:bg-zinc-900 border border-stone-300 dark:border-zinc-800 rounded-lg flex items-center justify-center font-bold text-stone-900 dark:text-white text-sm font-ninja">
               仙
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-bold text-white tracking-wider">SENSAI</span>
-                <span className="text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-400 px-1.5 py-0.5">
+                <span className="text-sm font-bold text-stone-900 dark:text-white tracking-wider font-ninja">SENSAI</span>
+                <span className="text-[10px] bg-stone-100 dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 px-1.5 py-0.5 rounded font-mono">
                   OPERATIONAL
                 </span>
               </div>
-              <span className="text-[11px] text-zinc-500">
+              <span className="text-[11px] text-stone-500 dark:text-zinc-500 font-mono">
                 {user ? user.email : 'Guest Operative // Explore Mode'}
               </span>
             </div>
@@ -411,7 +411,7 @@ export default function SensaiDashboard() {
               <button
                 onClick={handleSignOut}
                 title="Terminate Session"
-                className="p-1.5 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 text-zinc-400 hover:text-white transition-colors flex items-center space-x-1.5 px-3"
+                className="p-1.5 border border-stone-300 dark:border-zinc-800 hover:border-stone-400 dark:hover:border-zinc-700 bg-stone-100 dark:bg-zinc-900 text-stone-700 dark:text-zinc-400 hover:text-stone-950 dark:hover:text-white transition-colors flex items-center space-x-1.5 px-3 rounded-md font-ninja font-bold"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span className="text-[10px] uppercase font-bold tracking-wider">Sign Out</span>
@@ -419,9 +419,9 @@ export default function SensaiDashboard() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="p-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold transition-colors flex items-center space-x-1.5 px-3"
+                className="p-1.5 bg-stone-900 hover:bg-black dark:bg-zinc-900 dark:hover:bg-zinc-800 text-white border border-transparent dark:border-zinc-700 font-bold transition-colors flex items-center space-x-1.5 px-3 rounded-md font-ninja shadow-sm"
               >
-                <LogIn className="w-3.5 h-3.5 text-zinc-400" />
+                <LogIn className="w-3.5 h-3.5 text-stone-300 dark:text-zinc-400" />
                 <span className="text-[10px] uppercase tracking-wider">Sign In</span>
               </button>
             )}
@@ -430,16 +430,16 @@ export default function SensaiDashboard() {
 
         {/* Guest Exploration Banner (If unauthenticated) */}
         {!user && (
-          <div className="p-3.5 border border-zinc-800 bg-zinc-950/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center space-x-2.5 text-zinc-400">
-              <UserCheck className="w-4 h-4 text-zinc-300 shrink-0" />
+          <div className="p-3.5 border border-stone-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/70 rounded-xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center space-x-2.5 text-stone-600 dark:text-zinc-400">
+              <UserCheck className="w-4 h-4 text-stone-500 dark:text-zinc-300 shrink-0" />
               <span>
                 You are in <strong>Explore Mode</strong>. Arm your API key below and test course generation freely.
               </span>
             </div>
             <button
               onClick={() => setAuthModalOpen(true)}
-              className="text-[11px] text-zinc-300 hover:text-white font-bold uppercase tracking-wider underline underline-offset-4 shrink-0"
+              className="text-[11px] text-red-600 dark:text-zinc-300 hover:text-red-700 dark:hover:text-white font-bold uppercase tracking-wider underline underline-offset-4 shrink-0 font-ninja"
             >
               Sign In for Streaks &amp; XP &rarr;
             </button>
@@ -463,20 +463,22 @@ export default function SensaiDashboard() {
         </section>
 
         {/* Target Ingestion Form */}
-        <section className="border border-zinc-900 bg-zinc-950 p-6">
-          <div className="flex items-center space-x-2 text-zinc-500 text-xs mb-3 tracking-widest uppercase">
-            <Shield className="w-3.5 h-3.5 text-zinc-400" />
+        <section className="border border-stone-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-sm transition-colors">
+          <div className="flex items-center space-x-2 text-stone-500 dark:text-zinc-500 text-xs mb-3 tracking-widest uppercase font-ninja">
+            <Shield className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-400" />
             <span>Target Acquisition &amp; Playlist Queue</span>
           </div>
 
-          <h2 className="text-base font-bold text-white mb-1">Enter YouTube Source or Playlist</h2>
-          <p className="text-xs text-zinc-400 mb-6">
+          <h2 className="text-base sm:text-lg font-bold text-stone-900 dark:text-white mb-1 font-ninja">
+            Enter YouTube Source or Playlist
+          </h2>
+          <p className="text-xs text-stone-600 dark:text-zinc-400 mb-6 font-sans leading-relaxed">
             Supply any technical video or playlist URL. Sensai dynamically extracts lessons, code blocks, and localized trial quizzes.
           </p>
 
           <form onSubmit={handleFormSubmit} className="space-y-4">
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-400 mb-1.5 uppercase tracking-wider">
+              <label className="block text-[11px] font-semibold text-stone-600 dark:text-zinc-400 mb-1.5 uppercase tracking-wider font-ninja">
                 Target URL (Single Video or Playlist)
               </label>
               <input
@@ -485,23 +487,23 @@ export default function SensaiDashboard() {
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://www.youtube.com/watch?v=... or playlist?list=..."
                 disabled={loading}
-                className="w-full px-4 py-3 bg-zinc-900/70 border border-zinc-800 rounded-none text-zinc-100 placeholder-zinc-600 text-xs focus:outline-none focus:border-zinc-500 transition-colors disabled:opacity-50"
+                className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-900/70 border border-stone-300 dark:border-zinc-800 rounded-lg text-stone-900 dark:text-zinc-100 placeholder-stone-400 dark:placeholder-zinc-600 text-xs focus:outline-none focus:border-red-500 font-mono transition-colors disabled:opacity-50"
               />
             </div>
 
             {/* Playlist Queue Progress Bar */}
             {playlistProgress && (
-              <div className="p-3 border border-zinc-800 bg-zinc-900/80 space-y-2">
+              <div className="p-3 border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-900/80 rounded-lg space-y-2 font-mono">
                 <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 text-zinc-300">
-                    <ListVideo className="w-3.5 h-3.5 text-zinc-400" />
+                  <div className="flex items-center space-x-2 text-stone-800 dark:text-zinc-300">
+                    <ListVideo className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-400" />
                     <span className="font-bold">Playlist Queue Infiltration</span>
                   </div>
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="text-[11px] text-stone-500 dark:text-zinc-400">
                     {playlistProgress.current} / {playlistProgress.total} Targets
                   </span>
                 </div>
-                <div className="w-full h-1 bg-zinc-800 overflow-hidden">
+                <div className="w-full h-1 bg-stone-200 dark:bg-zinc-800 overflow-hidden rounded-full">
                   <div
                     className="h-full bg-red-600 transition-all duration-300"
                     style={{
@@ -509,21 +511,21 @@ export default function SensaiDashboard() {
                     }}
                   />
                 </div>
-                <div className="text-[10px] text-zinc-500 truncate">
+                <div className="text-[10px] text-stone-500 dark:text-zinc-500 truncate">
                   Current: {playlistProgress.currentTitle}
                 </div>
               </div>
             )}
 
             {statusMessage && !playlistProgress && (
-              <div className="p-3 border border-zinc-800 bg-zinc-900/50 text-zinc-300 text-xs flex items-center space-x-2">
-                <span className="w-2 h-2 bg-zinc-400 animate-ping"></span>
+              <div className="p-3 border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-900/50 text-stone-800 dark:text-zinc-300 text-xs flex items-center space-x-2 rounded-lg font-mono">
+                <span className="w-2 h-2 bg-red-500 animate-ping rounded-full"></span>
                 <span>{statusMessage}</span>
               </div>
             )}
 
             {error && (
-              <div className="p-3 border border-red-900/50 bg-red-950/20 text-red-400 text-xs leading-relaxed">
+              <div className="p-3 border border-red-300 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 text-xs leading-relaxed rounded-lg font-mono">
                 [ERROR]: {error}
               </div>
             )}
@@ -531,7 +533,7 @@ export default function SensaiDashboard() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-zinc-100 hover:bg-white text-black font-bold text-xs uppercase tracking-widest rounded-none disabled:opacity-40 transition-all active:scale-[0.99]"
+              className="w-full py-3.5 bg-stone-900 hover:bg-black text-white dark:bg-zinc-100 dark:hover:bg-white dark:text-black font-bold text-xs uppercase tracking-widest rounded-lg disabled:opacity-40 transition-all active:scale-[0.99] font-ninja shadow-sm"
             >
               {loading ? 'Decomposing Target Stream...' : 'Strike: Generate Interactive Course'}
             </button>
@@ -539,9 +541,9 @@ export default function SensaiDashboard() {
 
           {/* Stealth Skeletons displayed during processing */}
           {loading && (
-            <div className="mt-8 space-y-4">
-              <div className="flex items-center space-x-2 text-xs text-zinc-500 uppercase tracking-widest">
-                <Layers className="w-3.5 h-3.5 text-zinc-400" />
+            <div className="mt-8 space-y-4 font-mono">
+              <div className="flex items-center space-x-2 text-xs text-stone-500 dark:text-zinc-500 uppercase tracking-widest font-ninja">
+                <Layers className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-400" />
                 <span>Assembling Curriculum Structure...</span>
               </div>
               <StealthSkeleton count={2} />
@@ -550,46 +552,46 @@ export default function SensaiDashboard() {
 
           {/* Complete Course Generation Result Display */}
           {generationResult && (
-            <div className="mt-6 p-5 border border-zinc-800 bg-zinc-900/40 space-y-4">
+            <div className="mt-6 p-5 border border-stone-200 dark:border-zinc-800 bg-stone-50/70 dark:bg-zinc-900/40 rounded-xl space-y-4 font-mono">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider font-ninja">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>
                     {generationResult.isPlaylist ? 'Mega-Course Decomposed' : 'Curriculum Decomposed'}
                   </span>
                 </div>
-                <span className="text-[10px] uppercase font-bold tracking-widest bg-zinc-800 text-zinc-300 px-2.5 py-1 border border-zinc-700">
+                <span className="text-[10px] uppercase font-bold tracking-widest bg-stone-200 dark:bg-zinc-800 text-stone-800 dark:text-zinc-300 px-2.5 py-1 border border-stone-300 dark:border-zinc-700 rounded">
                   {generationResult.domainType}
                 </span>
               </div>
 
-              <div className="text-sm text-white font-medium">
+              <div className="text-sm text-stone-900 dark:text-white font-medium font-sans">
                 {generationResult.videoTitle}
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 border-y border-zinc-800 text-xs text-zinc-400">
-                <div className="bg-zinc-950/60 p-2 border border-zinc-900">
-                  <span className="block text-[10px] uppercase text-zinc-500">Modules</span>
-                  <span className="text-white font-bold">{generationResult.moduleCount}</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 border-y border-stone-200 dark:border-zinc-800 text-xs text-stone-600 dark:text-zinc-400">
+                <div className="bg-white dark:bg-zinc-950/60 p-2.5 border border-stone-200 dark:border-zinc-900 rounded">
+                  <span className="block text-[10px] uppercase text-stone-500 dark:text-zinc-500 font-ninja">Modules</span>
+                  <span className="text-stone-900 dark:text-white font-bold">{generationResult.moduleCount}</span>
                 </div>
-                <div className="bg-zinc-950/60 p-2 border border-zinc-900">
-                  <span className="block text-[10px] uppercase text-zinc-500">Final Trial</span>
-                  <span className="text-white font-bold">{generationResult.finalQuizQuestionCount} Questions</span>
+                <div className="bg-white dark:bg-zinc-950/60 p-2.5 border border-stone-200 dark:border-zinc-900 rounded">
+                  <span className="block text-[10px] uppercase text-stone-500 dark:text-zinc-500 font-ninja">Final Trial</span>
+                  <span className="text-stone-900 dark:text-white font-bold">{generationResult.finalQuizQuestionCount} Questions</span>
                 </div>
-                <div className="bg-zinc-950/60 p-2 border border-zinc-900">
-                  <span className="block text-[10px] uppercase text-zinc-500">Type</span>
-                  <span className="text-white font-bold">{generationResult.isPlaylist ? 'Mega-Playlist' : 'Single Video'}</span>
+                <div className="bg-white dark:bg-zinc-950/60 p-2.5 border border-stone-200 dark:border-zinc-900 rounded">
+                  <span className="block text-[10px] uppercase text-stone-500 dark:text-zinc-500 font-ninja">Type</span>
+                  <span className="text-stone-900 dark:text-white font-bold">{generationResult.isPlaylist ? 'Mega-Playlist' : 'Single Video'}</span>
                 </div>
-                <div className="bg-zinc-950/60 p-2 border border-zinc-900">
-                  <span className="block text-[10px] uppercase text-zinc-500">Status</span>
-                  <span className="text-emerald-400 font-bold uppercase">{generationResult.status}</span>
+                <div className="bg-white dark:bg-zinc-950/60 p-2.5 border border-stone-200 dark:border-zinc-900 rounded">
+                  <span className="block text-[10px] uppercase text-stone-500 dark:text-zinc-500 font-ninja">Status</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold uppercase">{generationResult.status}</span>
                 </div>
               </div>
 
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <div className="pt-2 flex flex-col sm:flex-row gap-3 font-ninja">
                 <a
                   href={`/course/${generationResult.courseId}`}
-                  className="flex-1 flex items-center justify-center space-x-2 py-3 bg-zinc-100 hover:bg-white text-black font-bold text-xs uppercase tracking-wider transition-colors"
+                  className="flex-1 flex items-center justify-center space-x-2 py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors rounded-lg shadow-sm"
                 >
                   <Swords className="w-4 h-4" />
                   <span>Enter Training Dojo</span>

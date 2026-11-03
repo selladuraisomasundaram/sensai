@@ -41,11 +41,7 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
       type="button"
       onClick={toggleTheme}
       title={`Switch to ${theme === 'dark' ? 'Parchment Light' : 'Stealth Dark'} Mode`}
-      className={`p-1.5 border transition-colors flex items-center space-x-1.5 font-mono text-xs rounded-none ${
-        theme === 'dark'
-          ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700'
-          : 'bg-zinc-100 border-zinc-300 text-zinc-800 hover:text-black hover:border-zinc-400'
-      } ${className}`}
+      className={`px-2.5 py-1.5 border transition-all flex items-center space-x-1.5 font-mono text-xs rounded-md shadow-sm border-stone-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-stone-700 dark:text-zinc-300 hover:text-stone-950 dark:hover:text-white hover:border-stone-400 dark:hover:border-zinc-700 active:scale-95 ${className}`}
     >
       {theme === 'dark' ? (
         <>

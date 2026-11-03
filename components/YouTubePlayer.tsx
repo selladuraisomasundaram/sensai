@@ -89,7 +89,7 @@ export default function YouTubePlayer({
   };
 
   return (
-    <div className="w-full relative aspect-video bg-black border border-zinc-900 shadow-2xl overflow-hidden">
+    <div className="w-full relative aspect-video bg-black rounded-xl border border-stone-200 dark:border-zinc-900 shadow-xl overflow-hidden">
       <YouTube
         videoId={videoId}
         opts={opts}

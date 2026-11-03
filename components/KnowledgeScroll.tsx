@@ -81,8 +81,8 @@ export default function KnowledgeScroll({
 
   if (!currentModule) {
     return (
-      <div className="border border-zinc-900 bg-zinc-950 p-8 rounded-xl text-center text-zinc-500 font-mono text-sm">
-        No scroll scrolls found in this Dojo session.
+      <div className="border border-stone-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-8 rounded-2xl text-center text-stone-500 dark:text-zinc-500 font-mono text-sm shadow-sm">
+        No knowledge scrolls discovered in this Dojo session.
       </div>
     );
   }
@@ -137,7 +137,7 @@ export default function KnowledgeScroll({
         setCompletedModules((prev) => ({ ...prev, [currentModuleId]: true }));
         toast('Knowledge checkpoint cleared! Sign in to claim XP & record discipline.', {
           className:
-            '!bg-zinc-900 !border-zinc-800 !text-amber-300 font-mono text-xs rounded-none shadow-2xl',
+            '!bg-white dark:!bg-zinc-900 !border-stone-300 dark:!border-zinc-800 !text-amber-600 dark:!text-amber-300 font-ninja text-xs shadow-xl',
         });
         return;
       }
@@ -162,10 +162,10 @@ export default function KnowledgeScroll({
         setCompletedModules((prev) => ({ ...prev, [currentModuleId]: true }));
 
         if (data.earnedXp > 0) {
-          toast(`Knowledge Scroll cleared. +${data.earnedXp} XP.`, {
+          toast(`Knowledge Scroll mastered! +${data.earnedXp} XP awarded.`, {
             description: `Discipline: ${data.totalXp} XP | Rank: ${data.rankProgress?.currentRank}`,
             className:
-              '!bg-zinc-900 !border-zinc-800 !text-white font-mono text-xs rounded-none shadow-2xl',
+              '!bg-white dark:!bg-zinc-900 !border-stone-300 dark:!border-zinc-800 !text-stone-900 dark:!text-white font-ninja text-xs shadow-xl',
           });
 
           if (onProgressUpdated) {
@@ -174,7 +174,7 @@ export default function KnowledgeScroll({
         } else {
           toast('Knowledge reinforced.', {
             className:
-              '!bg-zinc-900 !border-zinc-800 !text-zinc-300 font-mono text-xs rounded-none shadow-2xl',
+              '!bg-white dark:!bg-zinc-900 !border-stone-300 dark:!border-zinc-800 !text-stone-700 dark:!text-zinc-300 font-ninja text-xs shadow-xl',
           });
         }
       }
@@ -212,7 +212,7 @@ export default function KnowledgeScroll({
       {/* Chapter Selection Ribbon (Scroll Roll Header) */}
       <div className="relative">
         <div className="flex items-center space-x-2 overflow-x-auto pb-2 dojo-scrollbar">
-          {modules.map((m, idx) => {
+          {modules.map((m) => {
             const mId = m.id || m.module_order;
             const isSelected = mId === currentModuleId;
             const isDone = completedModules[mId];
@@ -225,14 +225,14 @@ export default function KnowledgeScroll({
                   onSelectModule(mId);
                   onSeek(parseTimestampToSeconds(m.content?.start_timestamp));
                 }}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono whitespace-nowrap transition-all rounded-md border shrink-0 ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-ninja whitespace-nowrap transition-all rounded-lg border shrink-0 ${
                   isSelected
-                    ? 'border-red-600 bg-red-950/40 text-red-200 font-bold shadow-[0_0_12px_rgba(220,38,38,0.3)]'
-                    : 'border-zinc-800/80 bg-zinc-950/80 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                    ? 'border-red-600 bg-red-100 text-red-900 dark:bg-red-950/40 dark:text-red-200 font-bold shadow-sm dark:shadow-[0_0_12px_rgba(220,38,38,0.3)]'
+                    : 'border-stone-200 bg-white text-stone-600 hover:text-stone-900 hover:border-stone-400 dark:border-zinc-800/80 dark:bg-zinc-950/80 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:border-zinc-700 shadow-sm'
                 }`}
               >
                 <span>CH {m.module_order.toString().padStart(2, '0')}</span>
-                {isDone && <CheckCircle className="w-3 h-3 text-emerald-400" />}
+                {isDone && <CheckCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />}
               </button>
             );
           })}
@@ -240,29 +240,29 @@ export default function KnowledgeScroll({
       </div>
 
       {/* Main Knowledge Scroll Container */}
-      <section className="relative border border-zinc-800/80 bg-gradient-to-b from-zinc-950 via-zinc-950/95 to-black rounded-2xl shadow-[inset_0_2px_12px_rgba(0,0,0,0.85),0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col transition-all">
+      <section className="relative border border-stone-200 dark:border-zinc-800/80 bg-white dark:bg-gradient-to-b dark:from-zinc-950 dark:via-zinc-950/95 dark:to-black rounded-2xl shadow-xl dark:shadow-[inset_0_2px_12px_rgba(0,0,0,0.85),0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col transition-all">
         {/* Top Scroll Cap Accent Line */}
-        <div className="h-1 bg-gradient-to-r from-zinc-800 via-red-600/80 to-zinc-800" />
+        <div className="h-1 bg-gradient-to-r from-stone-300 via-red-600 to-stone-300 dark:from-zinc-800 dark:via-red-600/80 dark:to-zinc-800" />
 
         {/* Scroll Header: Decorative Ninja Title & Seek Action */}
-        <div className="p-5 sm:p-6 border-b border-zinc-800/80 bg-zinc-900/40">
+        <div className="p-5 sm:p-6 border-b border-stone-200 dark:border-zinc-800/80 bg-stone-50/80 dark:bg-zinc-900/40">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-1">
-              <div className="flex items-center space-x-2 text-[10px] font-mono tracking-widest uppercase text-red-500 font-bold">
+              <div className="flex items-center space-x-2 text-[10px] font-ninja tracking-widest uppercase text-red-600 dark:text-red-500 font-bold">
                 <Scroll className="w-3.5 h-3.5" />
                 <span>
                   Chapter {currentModule.module_order} of {modules.length}
                 </span>
                 {isCurrentCompleted && (
-                  <span className="inline-flex items-center space-x-1 text-emerald-400 font-mono text-[10px] bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-900/50">
+                  <span className="inline-flex items-center space-x-1 text-emerald-700 bg-emerald-100 border border-emerald-300 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-900/50 font-mono text-[10px] px-2 py-0.5 rounded">
                     <CheckCircle className="w-2.5 h-2.5" />
                     <span>Mastered</span>
                   </span>
                 )}
               </div>
 
-              {/* Decorative Ninja Header (Strictly H1/H2 font-mono) */}
-              <h2 className="text-xl sm:text-2xl font-black font-mono tracking-tight text-white leading-tight">
+              {/* Decorative Ninja Header (Strictly H1/H2 font-ninja) */}
+              <h2 className="text-xl sm:text-2xl font-black font-ninja tracking-tight text-stone-900 dark:text-white leading-tight">
                 {currentModule.title || content?.title || `Module ${currentModule.module_order}`}
               </h2>
             </div>
@@ -272,9 +272,9 @@ export default function KnowledgeScroll({
               type="button"
               onClick={handleSeek}
               title="Seek video to chapter start"
-              className="self-start sm:self-auto inline-flex items-center space-x-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white transition-all shadow-sm active:scale-95 shrink-0"
+              className="self-start sm:self-auto inline-flex items-center space-x-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-stone-300 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-300 hover:text-stone-950 dark:hover:text-white transition-all shadow-sm active:scale-95 shrink-0"
             >
-              <Play className="w-3 h-3 fill-current text-red-500" />
+              <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
               <span>
                 {content?.start_timestamp || '00:00'} – {content?.end_timestamp || '00:00'}
               </span>
@@ -282,17 +282,17 @@ export default function KnowledgeScroll({
           </div>
 
           {/* Chunking Navigation Tabs */}
-          <div className="flex items-center space-x-1 mt-5 border-b border-zinc-800/60 overflow-x-auto dojo-scrollbar">
+          <div className="flex items-center space-x-1 mt-5 border-b border-stone-200 dark:border-zinc-800/60 overflow-x-auto dojo-scrollbar">
             <button
               type="button"
               onClick={() => setActiveTab('overview')}
-              className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
+              className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-ninja uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
                 activeTab === 'overview'
-                  ? 'border-red-500 text-white font-bold bg-zinc-900/30'
-                  : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                  ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-white font-bold bg-stone-100/70 dark:bg-zinc-900/30'
+                  : 'border-transparent text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:border-stone-300 dark:hover:border-zinc-700'
               }`}
             >
-              <BookOpen className="w-3.5 h-3.5 text-red-400" />
+              <BookOpen className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
               <span>Overview</span>
             </button>
 
@@ -300,13 +300,13 @@ export default function KnowledgeScroll({
               <button
                 type="button"
                 onClick={() => setActiveTab('concepts')}
-                className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
+                className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-ninja uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
                   activeTab === 'concepts'
-                    ? 'border-red-500 text-white font-bold bg-zinc-900/30'
-                    : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                    ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-white font-bold bg-stone-100/70 dark:bg-zinc-900/30'
+                    : 'border-transparent text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:border-stone-300 dark:hover:border-zinc-700'
                 }`}
               >
-                <Target className="w-3.5 h-3.5 text-amber-400" />
+                <Target className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 <span>Key Concepts</span>
               </button>
             )}
@@ -315,13 +315,13 @@ export default function KnowledgeScroll({
               <button
                 type="button"
                 onClick={() => setActiveTab('code')}
-                className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
+                className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-ninja uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
                   activeTab === 'code'
-                    ? 'border-red-500 text-white font-bold bg-zinc-900/30'
-                    : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                    ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-white font-bold bg-stone-100/70 dark:bg-zinc-900/30'
+                    : 'border-transparent text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:border-stone-300 dark:hover:border-zinc-700'
                 }`}
               >
-                <Code className="w-3.5 h-3.5 text-cyan-400" />
+                <Code className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                 <span>Missions &amp; Code</span>
               </button>
             )}
@@ -330,13 +330,13 @@ export default function KnowledgeScroll({
               <button
                 type="button"
                 onClick={() => setActiveTab('quiz')}
-                className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
+                className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-ninja uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
                   activeTab === 'quiz'
-                    ? 'border-red-500 text-white font-bold bg-zinc-900/30'
-                    : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                    ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-white font-bold bg-stone-100/70 dark:bg-zinc-900/30'
+                    : 'border-transparent text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:border-stone-300 dark:hover:border-zinc-700'
                 }`}
               >
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Trial Quiz</span>
               </button>
             )}
@@ -344,13 +344,13 @@ export default function KnowledgeScroll({
             <button
               type="button"
               onClick={() => setActiveTab('notes')}
-              className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
+              className={`inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-ninja uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
                 activeTab === 'notes'
-                  ? 'border-red-500 text-white font-bold bg-zinc-900/30'
-                  : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                  ? 'border-red-600 text-red-600 dark:border-red-500 dark:text-white font-bold bg-stone-100/70 dark:bg-zinc-900/30'
+                  : 'border-transparent text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:border-stone-300 dark:hover:border-zinc-700'
               }`}
             >
-              <FileText className="w-3.5 h-3.5 text-zinc-400" />
+              <FileText className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-400" />
               <span>Intel Notes</span>
             </button>
           </div>
@@ -365,12 +365,12 @@ export default function KnowledgeScroll({
             <div className="space-y-6">
               {/* Main Core Narrative / Architectural Objective in High-Legibility Sans */}
               <div className="space-y-2">
-                <span className="text-[11px] font-mono tracking-widest uppercase text-zinc-500 font-bold block">
+                <span className="text-[11px] font-ninja tracking-widest uppercase text-stone-500 dark:text-zinc-500 font-bold block">
                   Core Tactical Objective
                 </span>
 
-                <div className="p-4 sm:p-5 rounded-xl border border-zinc-800/90 bg-zinc-900/50 shadow-inner">
-                  <p className="font-sans text-base sm:text-lg leading-relaxed text-zinc-200 antialiased font-normal">
+                <div className="p-4 sm:p-5 rounded-xl border border-stone-200 dark:border-zinc-800/90 bg-stone-50/80 dark:bg-zinc-900/50 shadow-inner">
+                  <p className="font-sans text-base sm:text-lg leading-relaxed text-stone-800 dark:text-zinc-200 antialiased font-normal">
                     {content?.architectural_objective ||
                       content?.context ||
                       content?.real_world_application ||
@@ -383,32 +383,32 @@ export default function KnowledgeScroll({
 
               {/* Quick Summary Highlights */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-900/30 space-y-1">
-                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block">
+                <div className="p-3.5 rounded-lg border border-stone-200 dark:border-zinc-800/80 bg-stone-50/60 dark:bg-zinc-900/30 space-y-1">
+                  <span className="text-[10px] font-ninja text-stone-500 dark:text-zinc-500 uppercase tracking-widest block font-bold">
                     Execution Window
                   </span>
-                  <div className="font-mono text-sm font-semibold text-zinc-300">
+                  <div className="font-mono text-sm font-semibold text-stone-800 dark:text-zinc-300">
                     {content?.start_timestamp || '00:00'} to {content?.end_timestamp || '00:00'}
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-900/30 space-y-1">
-                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block">
+                <div className="p-3.5 rounded-lg border border-stone-200 dark:border-zinc-800/80 bg-stone-50/60 dark:bg-zinc-900/30 space-y-1">
+                  <span className="text-[10px] font-ninja text-stone-500 dark:text-zinc-500 uppercase tracking-widest block font-bold">
                     Discipline Pillar
                   </span>
-                  <div className="font-mono text-sm font-semibold text-red-400 capitalize">
+                  <div className="font-mono text-sm font-semibold text-red-600 dark:text-red-400 capitalize">
                     {domainType.replace('_', ' ')}
                   </div>
                 </div>
               </div>
 
               {/* Teaser CTA to explore concepts or code */}
-              <div className="pt-2 flex items-center justify-between text-xs font-mono text-zinc-500">
+              <div className="pt-2 flex items-center justify-between text-xs font-ninja text-stone-500 dark:text-zinc-500">
                 <span>Select tabs above for detailed code and quizzes</span>
                 <button
                   type="button"
                   onClick={() => setActiveTab(hasKeyConcepts ? 'concepts' : hasCode ? 'code' : 'quiz')}
-                  className="text-red-400 hover:text-red-300 underline underline-offset-4 flex items-center space-x-1"
+                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-bold underline underline-offset-4 flex items-center space-x-1"
                 >
                   <span>Explore Concepts</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -427,16 +427,16 @@ export default function KnowledgeScroll({
                 <div className="space-y-4">
                   {content.core_theories?.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold block">
+                      <span className="text-xs font-ninja uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                         Theoretical Foundations
                       </span>
                       <ul className="space-y-2.5">
                         {content.core_theories.map((theory: string, idx: number) => (
                           <li
                             key={idx}
-                            className="p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/40 font-sans text-base leading-relaxed text-zinc-200"
+                            className="p-4 rounded-xl border border-stone-200 dark:border-zinc-800/80 bg-stone-50/70 dark:bg-zinc-900/40 font-sans text-base leading-relaxed text-stone-800 dark:text-zinc-200"
                           >
-                            <strong className="font-mono text-xs text-red-400 mr-2 uppercase tracking-wider block sm:inline">
+                            <strong className="font-ninja text-xs text-red-600 dark:text-red-400 mr-2 uppercase tracking-wider block sm:inline font-bold">
                               Theory {idx + 1}:
                             </strong>
                             {theory}
@@ -448,10 +448,10 @@ export default function KnowledgeScroll({
 
                   {content.formulas_or_dates?.length > 0 && (
                     <div className="space-y-2 pt-2">
-                      <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold block">
+                      <span className="text-xs font-ninja uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                         Formulas, Theorems &amp; Empirical Dates
                       </span>
-                      <div className="p-4 rounded-xl border border-zinc-800 bg-black font-mono text-xs text-amber-300 space-y-1.5">
+                      <div className="p-4 rounded-xl border border-stone-300 dark:border-zinc-800 bg-stone-900 text-amber-300 dark:bg-black font-mono text-xs space-y-1.5 shadow-sm">
                         {content.formulas_or_dates.map((f: string, idx: number) => (
                           <div key={idx} className="leading-relaxed">
                             &bull; {f}
@@ -468,12 +468,12 @@ export default function KnowledgeScroll({
                   {content.speaker_perspectives?.map((sp: any, idx: number) => (
                     <div
                       key={idx}
-                      className="p-4 sm:p-5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-2"
+                      className="p-4 sm:p-5 rounded-xl border border-stone-200 dark:border-zinc-800/80 bg-stone-50/70 dark:bg-zinc-900/40 space-y-2"
                     >
-                      <div className="font-mono text-xs font-bold text-red-400 uppercase tracking-wider">
+                      <div className="font-ninja text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
                         {sp.speaker || `Speaker ${idx + 1}`}
                       </div>
-                      <p className="font-sans text-base leading-relaxed text-zinc-200">
+                      <p className="font-sans text-base leading-relaxed text-stone-800 dark:text-zinc-200">
                         {sp.perspective}
                       </p>
                     </div>
@@ -481,16 +481,16 @@ export default function KnowledgeScroll({
 
                   {content.key_takeaways?.length > 0 && (
                     <div className="space-y-2 pt-2">
-                      <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold block">
+                      <span className="text-xs font-ninja uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                         Key Dialectic Takeaways
                       </span>
                       <ul className="space-y-2">
                         {content.key_takeaways.map((takeaway: string, idx: number) => (
                           <li
                             key={idx}
-                            className="p-3.5 rounded-lg border border-zinc-800/70 bg-zinc-900/30 font-sans text-sm sm:text-base leading-relaxed text-zinc-300 flex items-start space-x-2.5"
+                            className="p-3.5 rounded-lg border border-stone-200 dark:border-zinc-800/70 bg-stone-50/60 dark:bg-zinc-900/30 font-sans text-sm sm:text-base leading-relaxed text-stone-800 dark:text-zinc-300 flex items-start space-x-2.5"
                           >
-                            <span className="text-red-500 font-mono text-xs mt-0.5">&bull;</span>
+                            <span className="text-red-500 font-ninja text-xs mt-0.5">&bull;</span>
                             <span>{takeaway}</span>
                           </li>
                         ))}
@@ -504,16 +504,16 @@ export default function KnowledgeScroll({
                 <div className="space-y-4">
                   {content.materials_needed?.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold block">
+                      <span className="text-xs font-ninja uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                         Required Components &amp; Tools
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {content.materials_needed.map((mat: string, idx: number) => (
                           <div
                             key={idx}
-                            className="p-3 rounded-lg border border-zinc-800/80 bg-zinc-900/40 font-mono text-xs text-zinc-300 flex items-center space-x-2"
+                            className="p-3 rounded-lg border border-stone-200 dark:border-zinc-800/80 bg-stone-50 dark:bg-zinc-900/40 font-mono text-xs text-stone-800 dark:text-zinc-300 flex items-center space-x-2"
                           >
-                            <Wrench className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                            <Wrench className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-500 shrink-0" />
                             <span>{mat}</span>
                           </div>
                         ))}
@@ -522,12 +522,12 @@ export default function KnowledgeScroll({
                   )}
 
                   {content.safety_warnings?.length > 0 && (
-                    <div className="p-4 rounded-xl border border-amber-900/60 bg-amber-950/20 text-amber-200 space-y-2">
-                      <div className="flex items-center space-x-2 font-mono text-xs font-bold uppercase tracking-wider text-amber-400">
-                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                    <div className="p-4 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/20 text-amber-900 dark:text-amber-200 space-y-2">
+                      <div className="flex items-center space-x-2 font-ninja text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
                         <span>Safety Hazard Protocols</span>
                       </div>
-                      <ul className="space-y-1 font-sans text-sm leading-relaxed text-amber-100/90 list-disc list-inside">
+                      <ul className="space-y-1 font-sans text-sm leading-relaxed text-amber-950/90 dark:text-amber-100/90 list-disc list-inside">
                         {content.safety_warnings.map((warn: string, idx: number) => (
                           <li key={idx}>{warn}</li>
                         ))}
@@ -541,17 +541,17 @@ export default function KnowledgeScroll({
                 <div className="space-y-4">
                   {content.keyboard_shortcuts?.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold block">
+                      <span className="text-xs font-ninja uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                         Tactical Keyboard Shortcuts
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {content.keyboard_shortcuts.map((sc: any, idx: number) => (
                           <div
                             key={idx}
-                            className="p-3 rounded-xl border border-zinc-800/80 bg-zinc-900/50 flex items-center justify-between"
+                            className="p-3 rounded-xl border border-stone-200 dark:border-zinc-800/80 bg-stone-50 dark:bg-zinc-900/50 flex items-center justify-between"
                           >
-                            <span className="font-sans text-xs text-zinc-300">{sc.action}</span>
-                            <kbd className="px-2 py-1 bg-black border border-zinc-700 font-mono text-xs text-amber-300 rounded shadow-sm">
+                            <span className="font-sans text-xs text-stone-800 dark:text-zinc-300">{sc.action}</span>
+                            <kbd className="px-2 py-1 bg-stone-100 dark:bg-black border border-stone-300 dark:border-zinc-700 font-mono text-xs text-stone-900 dark:text-amber-300 rounded shadow-sm">
                               {sc.key}
                             </kbd>
                           </div>
@@ -562,16 +562,16 @@ export default function KnowledgeScroll({
 
                   {content.ui_navigation_steps?.length > 0 && (
                     <div className="space-y-2 pt-2">
-                      <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold block">
+                      <span className="text-xs font-ninja uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                         Navigation Workflow Path
                       </span>
                       <ol className="space-y-2">
                         {content.ui_navigation_steps.map((step: string, idx: number) => (
                           <li
                             key={idx}
-                            className="p-3 rounded-lg border border-zinc-800/80 bg-zinc-900/30 font-sans text-sm sm:text-base leading-relaxed text-zinc-200 flex items-start space-x-3"
+                            className="p-3 rounded-lg border border-stone-200 dark:border-zinc-800/80 bg-stone-50/60 dark:bg-zinc-900/30 font-sans text-sm sm:text-base leading-relaxed text-stone-800 dark:text-zinc-200 flex items-start space-x-3"
                           >
-                            <span className="font-mono text-xs font-bold text-red-500 bg-black px-1.5 py-0.5 rounded border border-zinc-800">
+                            <span className="font-ninja text-xs font-bold text-red-600 dark:text-red-500 bg-stone-200 dark:bg-black px-1.5 py-0.5 rounded border border-stone-300 dark:border-zinc-800">
                               {idx + 1}
                             </span>
                             <span>{step}</span>
@@ -585,7 +585,7 @@ export default function KnowledgeScroll({
 
               {/* Fallback generic overview if not specific */}
               {!hasKeyConcepts && (
-                <div className="p-6 text-center text-zinc-500 font-mono text-xs">
+                <div className="p-6 text-center text-stone-500 dark:text-zinc-500 font-mono text-xs">
                   All foundational concepts for this chapter are summarized in the Overview tab.
                 </div>
               )}
@@ -601,20 +601,20 @@ export default function KnowledgeScroll({
               {content.code_blocks?.map((cb: any, idx: number) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-zinc-800 bg-black overflow-hidden shadow-lg"
+                  className="rounded-xl border border-stone-300 dark:border-zinc-800 bg-stone-950 overflow-hidden shadow-lg"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="bg-zinc-900/90 px-4 py-2 border-b border-zinc-800 flex items-center justify-between text-xs font-mono text-zinc-400">
+                  <div className="bg-stone-900 dark:bg-zinc-900/90 px-4 py-2 border-b border-stone-800 dark:border-zinc-800 flex items-center justify-between text-xs font-mono text-zinc-300">
                     <div className="flex items-center space-x-2">
                       <Code className="w-3.5 h-3.5 text-cyan-400" />
-                      <span className="font-semibold text-zinc-300">
+                      <span className="font-semibold text-zinc-200 font-ninja">
                         {cb.filename || `${cb.language || 'code'}-snippet-${idx + 1}`}
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={(e) => handleCopyCode(cb.code, idx, e)}
-                      className="inline-flex items-center space-x-1.5 px-2.5 py-1 text-[11px] font-mono rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white transition-colors"
+                      className="inline-flex items-center space-x-1.5 px-2.5 py-1 text-[11px] font-ninja font-bold rounded bg-stone-800 hover:bg-stone-700 text-zinc-200 hover:text-white transition-colors"
                     >
                       {copiedCodeIdx === idx ? (
                         <>
@@ -639,7 +639,7 @@ export default function KnowledgeScroll({
                       background: 'transparent',
                       fontSize: '12px',
                       fontFamily:
-                        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                        'var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
                       lineHeight: '1.6',
                     }}
                   >
@@ -650,12 +650,12 @@ export default function KnowledgeScroll({
 
               {/* Challenge Mission in local IDE */}
               {content.challenge_mission && (
-                <div className="p-5 rounded-xl border border-red-900/60 bg-red-950/20 text-red-200 space-y-2 shadow-inner">
-                  <div className="flex items-center space-x-2 font-mono text-xs font-bold uppercase tracking-wider text-red-400">
+                <div className="p-5 rounded-xl border border-red-300 dark:border-red-900/60 bg-red-50/70 dark:bg-red-950/20 text-red-950 dark:text-red-200 space-y-2 shadow-inner">
+                  <div className="flex items-center space-x-2 font-ninja text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
                     <CheckSquare className="w-4 h-4" />
                     <span>Local IDE Mission Challenge</span>
                   </div>
-                  <p className="font-sans text-base sm:text-lg leading-relaxed text-zinc-100 antialiased">
+                  <p className="font-sans text-base sm:text-lg leading-relaxed text-stone-900 dark:text-zinc-100 antialiased">
                     {content.challenge_mission}
                   </p>
                 </div>
@@ -668,11 +668,11 @@ export default function KnowledgeScroll({
           {/* ======================================================== */}
           {activeTab === 'quiz' && (
             <div className="space-y-4">
-              <div className="pb-2 border-b border-zinc-800 flex items-center justify-between">
-                <span className="font-mono text-xs uppercase tracking-wider text-zinc-400 font-bold">
+              <div className="pb-2 border-b border-stone-200 dark:border-zinc-800 flex items-center justify-between">
+                <span className="font-ninja text-xs uppercase tracking-wider text-stone-600 dark:text-zinc-400 font-bold">
                   Chapter Knowledge Trial
                 </span>
-                <span className="font-mono text-[11px] text-emerald-400">
+                <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
                   Earn +10 to +50 XP upon completion
                 </span>
               </div>
@@ -685,7 +685,7 @@ export default function KnowledgeScroll({
                   onComplete={handleQuizComplete}
                 />
               ) : (
-                <div className="p-8 text-center text-zinc-500 font-mono text-xs">
+                <div className="p-8 text-center text-stone-500 dark:text-zinc-500 font-mono text-xs">
                   No checkpoint questions registered for this chapter.
                 </div>
               )}
@@ -697,28 +697,28 @@ export default function KnowledgeScroll({
           {/* ======================================================== */}
           {activeTab === 'notes' && (
             <div className="space-y-4">
-              <span className="font-mono text-xs uppercase tracking-widest text-zinc-400 font-bold block">
+              <span className="font-ninja text-xs uppercase tracking-widest text-stone-600 dark:text-zinc-400 font-bold block">
                 Chapter Intel &amp; Source Timing
               </span>
 
-              <div className="p-4 sm:p-5 rounded-xl border border-zinc-800 bg-zinc-900/40 space-y-3 font-mono text-xs text-zinc-300">
-                <div className="flex items-center justify-between text-zinc-400 pb-2 border-b border-zinc-800">
+              <div className="p-4 sm:p-5 rounded-xl border border-stone-200 dark:border-zinc-800 bg-stone-50/70 dark:bg-zinc-900/40 space-y-3 font-mono text-xs text-stone-700 dark:text-zinc-300">
+                <div className="flex items-center justify-between text-stone-600 dark:text-zinc-400 pb-2 border-b border-stone-200 dark:border-zinc-800">
                   <span>Start Timestamp:</span>
-                  <span className="text-white font-bold">{content?.start_timestamp || '00:00'}</span>
+                  <span className="text-stone-900 dark:text-white font-bold">{content?.start_timestamp || '00:00'}</span>
                 </div>
-                <div className="flex items-center justify-between text-zinc-400 pb-2 border-b border-zinc-800">
+                <div className="flex items-center justify-between text-stone-600 dark:text-zinc-400 pb-2 border-b border-stone-200 dark:border-zinc-800">
                   <span>End Timestamp:</span>
-                  <span className="text-white font-bold">{content?.end_timestamp || '00:00'}</span>
+                  <span className="text-stone-900 dark:text-white font-bold">{content?.end_timestamp || '00:00'}</span>
                 </div>
-                <div className="flex items-center justify-between text-zinc-400">
+                <div className="flex items-center justify-between text-stone-600 dark:text-zinc-400">
                   <span>Chapter Index:</span>
-                  <span className="text-red-400 font-bold">
+                  <span className="text-red-600 dark:text-red-400 font-bold font-ninja">
                     {currentModule.module_order} of {modules.length}
                   </span>
                 </div>
               </div>
 
-              <p className="font-sans text-sm text-zinc-400 leading-relaxed italic">
+              <p className="font-sans text-sm text-stone-500 dark:text-zinc-400 leading-relaxed italic">
                 Tip: Click any timestamp in the header or chapter list to seek the video player
                 directly to the start of this section.
               </p>
@@ -727,19 +727,19 @@ export default function KnowledgeScroll({
         </div>
 
         {/* Scroll Footer Navigation (Next / Previous Chapter Roll) */}
-        <div className="p-4 sm:p-5 border-t border-zinc-800/80 bg-zinc-900/50 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-t border-stone-200 dark:border-zinc-800/80 bg-stone-50/80 dark:bg-zinc-900/50 flex items-center justify-between">
           <button
             type="button"
             onClick={handlePrevModule}
             disabled={activeIndex === 0}
-            className="inline-flex items-center space-x-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white disabled:opacity-40 disabled:hover:bg-zinc-900 transition-all active:scale-95"
+            className="inline-flex items-center space-x-2 px-3 py-1.5 text-xs font-ninja font-bold rounded-lg border border-stone-300 dark:border-zinc-800 bg-white hover:bg-stone-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-stone-700 hover:text-stone-950 dark:text-zinc-300 dark:hover:text-white disabled:opacity-40 disabled:hover:bg-white dark:disabled:hover:bg-zinc-900 transition-all active:scale-95 shadow-sm"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Previous Chapter</span>
             <span className="sm:hidden">Prev</span>
           </button>
 
-          <span className="text-[11px] font-mono text-zinc-500">
+          <span className="text-[11px] font-ninja text-stone-500 dark:text-zinc-500 uppercase tracking-widest font-bold">
             {activeIndex + 1} / {modules.length} Chapters
           </span>
 
@@ -747,7 +747,7 @@ export default function KnowledgeScroll({
             type="button"
             onClick={handleNextModule}
             disabled={activeIndex === modules.length - 1}
-            className="inline-flex items-center space-x-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white disabled:opacity-40 disabled:hover:bg-zinc-900 transition-all active:scale-95"
+            className="inline-flex items-center space-x-2 px-3 py-1.5 text-xs font-ninja font-bold rounded-lg border border-stone-300 dark:border-zinc-800 bg-white hover:bg-stone-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-stone-700 hover:text-stone-950 dark:text-zinc-300 dark:hover:text-white disabled:opacity-40 disabled:hover:bg-white dark:disabled:hover:bg-zinc-900 transition-all active:scale-95 shadow-sm"
           >
             <span className="hidden sm:inline">Next Chapter</span>
             <span className="sm:hidden">Next</span>
@@ -756,9 +756,8 @@ export default function KnowledgeScroll({
         </div>
 
         {/* Bottom Scroll Cap Accent Line */}
-        <div className="h-1 bg-gradient-to-r from-zinc-800 via-red-600/80 to-zinc-800" />
+        <div className="h-1 bg-gradient-to-r from-stone-300 via-red-600 to-stone-300 dark:from-zinc-800 dark:via-red-600/80 dark:to-zinc-800" />
       </section>
     </div>
   );
 }
-

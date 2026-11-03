@@ -170,15 +170,15 @@ export default function CourseDetailPage() {
   // Stealth Skeleton Loading State
   if (loading) {
     return (
-      <main className="min-h-screen bg-black text-zinc-400 font-mono p-6">
+      <main className="min-h-screen bg-stone-50 dark:bg-black text-stone-600 dark:text-zinc-400 font-mono p-6">
         <div className="max-w-7xl mx-auto space-y-6">
-          <div className="h-10 bg-zinc-950 border border-zinc-900 flex items-center px-4">
-            <span className="text-xs uppercase tracking-widest text-zinc-500 animate-pulse">
+          <div className="h-10 bg-white dark:bg-zinc-950 border border-stone-200 dark:border-zinc-900 flex items-center px-4">
+            <span className="text-xs uppercase tracking-widest text-stone-500 dark:text-zinc-500 animate-pulse">
               Synchronizing Training Grounds &amp; Fetching Ledger...
             </span>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="aspect-video bg-zinc-950 border border-zinc-900 animate-pulse" />
+            <div className="aspect-video bg-stone-200 dark:bg-zinc-950 border border-stone-300 dark:border-zinc-900 animate-pulse" />
             <div className="space-y-4">
               <StealthSkeleton count={3} />
             </div>
@@ -190,15 +190,15 @@ export default function CourseDetailPage() {
 
   if (error || !course) {
     return (
-      <main className="min-h-screen bg-black flex flex-col items-center justify-center font-mono text-zinc-400 p-6">
-        <div className="max-w-md w-full border border-red-900/60 bg-zinc-950 p-6 space-y-4">
-          <div className="text-red-400 text-xs font-bold uppercase tracking-wider">
+      <main className="min-h-screen bg-stone-50 dark:bg-black flex flex-col items-center justify-center font-mono text-stone-600 dark:text-zinc-400 p-6">
+        <div className="max-w-md w-full border border-red-300 dark:border-red-900/60 bg-white dark:bg-zinc-950 p-6 space-y-4 shadow-xl">
+          <div className="text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-wider font-ninja">
             [ACCESS PROTOCOL ERROR]
           </div>
-          <p className="text-xs text-zinc-300 leading-relaxed">{error || 'Course inaccessible.'}</p>
+          <p className="text-xs text-stone-700 dark:text-zinc-300 leading-relaxed font-sans">{error || 'Course inaccessible.'}</p>
           <button
             onClick={() => router.push('/')}
-            className="w-full py-2.5 bg-zinc-900 border border-zinc-800 text-white text-xs uppercase tracking-wider hover:bg-zinc-800"
+            className="w-full py-2.5 bg-stone-900 hover:bg-black text-white dark:bg-zinc-900 dark:border dark:border-zinc-800 dark:text-white text-xs uppercase tracking-wider dark:hover:bg-zinc-800 transition-colors"
           >
             Return to Command Center
           </button>
@@ -211,37 +211,37 @@ export default function CourseDetailPage() {
   const domainType = (course.domain_type as VideoDomain) || 'technical_coding';
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-mono">
-      <Toaster theme="dark" position="bottom-right" />
+    <div className="min-h-screen bg-stone-50 dark:bg-black text-stone-900 dark:text-zinc-100 font-sans transition-colors duration-200">
+      <Toaster position="bottom-right" />
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur border-b border-zinc-900 px-4 py-3 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur border-b border-stone-200 dark:border-zinc-900 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3 min-w-0">
           <button
             onClick={() => router.push('/')}
             title="Return to Main Workspace"
-            className="p-1.5 border border-zinc-800 hover:border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
+            className="p-2 border border-stone-300 hover:border-stone-400 bg-white dark:border-zinc-800 dark:hover:border-zinc-700 dark:bg-zinc-900 text-stone-600 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-white rounded-md shadow-sm transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
 
           <div className="truncate">
-            <span className="text-[10px] text-zinc-500 uppercase tracking-widest block">
+            <span className="text-[10px] text-red-600 dark:text-red-500 font-bold uppercase tracking-widest block font-ninja">
               SENSAI TRAINING GROUNDS
             </span>
-            <h1 className="text-xs sm:text-sm font-bold text-white truncate max-w-sm sm:max-w-md">
+            <h1 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-white truncate max-w-sm sm:max-w-md font-ninja tracking-tight">
               {course.video_title}
             </h1>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 text-xs shrink-0">
+        <div className="flex items-center space-x-2 sm:space-x-3 text-xs shrink-0 font-mono">
           <ThemeToggle />
-          <span className="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest bg-zinc-900 border border-zinc-800 px-2 py-1 text-zinc-400">
+          <span className="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest bg-stone-100 dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 px-2.5 py-1 text-stone-700 dark:text-zinc-400 rounded-md">
             {domainType}
           </span>
-          <div className="flex items-center space-x-1.5 bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-[11px] text-zinc-300">
-            <Clock className="w-3 h-3 text-zinc-400" />
+          <div className="flex items-center space-x-1.5 bg-stone-100 dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 px-2.5 py-1 text-[11px] text-stone-700 dark:text-zinc-300 rounded-md">
+            <Clock className="w-3 h-3 text-stone-500 dark:text-zinc-400" />
             <span>{formatSecondsToTimestamp(currentTime)}</span>
           </div>
         </div>
@@ -269,30 +269,30 @@ export default function CourseDetailPage() {
             />
 
             {/* Video Tactical Meta Card */}
-            <div className="border border-zinc-900 bg-zinc-950 p-4 space-y-3">
+            <div className="border border-stone-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-4 space-y-3 shadow-sm rounded-xl font-mono">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Target Intel</span>
+                <span className="text-[10px] text-stone-500 dark:text-zinc-500 uppercase tracking-widest font-ninja">Target Intel</span>
                 <a
                   href={course.youtube_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center space-x-1 text-[11px] text-zinc-400 hover:text-white"
+                  className="flex items-center space-x-1 text-[11px] text-stone-600 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-white transition-colors"
                 >
                   <span>Source URL</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
 
-              <div className="text-xs text-zinc-300 leading-relaxed font-semibold">
+              <div className="text-xs text-stone-800 dark:text-zinc-300 leading-relaxed font-semibold font-sans">
                 {course.video_title}
               </div>
 
-              <div className="pt-2 border-t border-zinc-900 flex items-center justify-between text-[11px] text-zinc-500">
-                <div className="flex items-center space-x-1.5 text-emerald-400">
+              <div className="pt-2 border-t border-stone-100 dark:border-zinc-900 flex items-center justify-between text-[11px] text-stone-500 dark:text-zinc-500">
+                <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>RLS Verified ({modules.length} Modules)</span>
                 </div>
-                <div className="flex items-center space-x-1 text-zinc-400">
+                <div className="flex items-center space-x-1 text-stone-500 dark:text-zinc-400">
                   <Flame className="w-3 h-3 text-amber-500" />
                   <span>Interactive Sync</span>
                 </div>
