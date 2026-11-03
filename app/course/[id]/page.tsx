@@ -7,7 +7,7 @@ import type { CourseRow, ModuleRow, VideoDomain } from '@/types/course';
 import type { UserProfile } from '@/lib/streak';
 import { parseTimestampToSeconds, formatSecondsToTimestamp } from '@/lib/timeUtils';
 import YouTubePlayer from '@/components/YouTubePlayer';
-import ModuleCard from '@/components/ModuleCard';
+import KnowledgeScroll from '@/components/KnowledgeScroll';
 import FinalQuiz from '@/components/FinalQuiz';
 import ProfileWidget from '@/components/ProfileWidget';
 import StealthSkeleton from '@/components/StealthSkeleton';
@@ -300,40 +300,22 @@ export default function CourseDetailPage() {
             </div>
           </div>
 
-          {/* Right Column: Scrollable Modules & Final Trial Quiz */}
+          {/* Right Column: Knowledge Scroll (Redesigned Reader) & Final Trial Quiz */}
           <div className="w-full lg:w-7/12 xl:w-1/2 space-y-6">
-            <div className="flex items-center justify-between pb-2 border-b border-zinc-900">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-                Curriculum Decomposition ({modules.length} Lessons)
-              </span>
-              <span className="text-[10px] text-zinc-600 uppercase tracking-widest">
-                Click module or code to seek video
-              </span>
-            </div>
-
-            {/* Modules List Wrapped in React Error Boundaries */}
-            <div className="space-y-4">
-              {modules.map((mod) => {
-                const id = mod.id || mod.module_order;
-                const isActive = activeModuleId === id;
-
-                return (
-                  <ErrorBoundary key={id} fallbackRender={ModuleErrorFallback}>
-                    <ModuleCard
-                      module={mod}
-                      domainType={domainType}
-                      isActive={isActive}
-                      onSeek={handleSeek}
-                      onProgressUpdated={handleProgressUpdated}
-                    />
-                  </ErrorBoundary>
-                );
-              })}
-            </div>
+            <ErrorBoundary fallbackRender={ModuleErrorFallback}>
+              <KnowledgeScroll
+                modules={modules}
+                activeModuleId={activeModuleId}
+                onSelectModule={(id) => setActiveModuleId(id)}
+                domainType={domainType}
+                onSeek={handleSeek}
+                onProgressUpdated={handleProgressUpdated}
+              />
+            </ErrorBoundary>
 
             {/* Final Trial Examination Block */}
             {course.final_quiz && course.final_quiz.length > 0 && (
-              <div className="pt-6">
+              <div className="pt-2">
                 <FinalQuiz quiz={course.final_quiz} courseId={course.id} />
               </div>
             )}

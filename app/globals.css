@@ -99,6 +99,46 @@ html.light textarea::placeholder {
   color: #a1a1aa !important;
 }
 
+/* ======================================================== */
+/* Dojo Knowledge Scroll - Custom Theme Scrollbar           */
+/* ======================================================== */
+.dojo-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dojo-scrollbar::-webkit-scrollbar-track {
+  background: rgba(9, 9, 11, 0.6);
+  border-radius: 9999px;
+}
+
+.dojo-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(63, 63, 70, 0.6);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+.dojo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.8);
+}
+
+.dojo-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(63, 63, 70, 0.6) rgba(9, 9, 11, 0.6);
+}
+
+html.light .dojo-scrollbar::-webkit-scrollbar-track {
+  background: rgba(244, 244, 245, 0.8);
+}
+
+html.light .dojo-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.8);
+}
+
+html.light .dojo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(185, 28, 28, 0.8);
+}
+
 html.light button.bg-zinc-100 {
   background-color: #18181b !important;
   color: #ffffff !important;
