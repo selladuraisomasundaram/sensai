@@ -107,7 +107,9 @@ export async function callGemini(
     ])
   );
 
-  const apiVersions = ['v1beta', 'v1'];
+  // JSON mode (responseMimeType: application/json) is only supported in v1beta.
+  // Calling v1 with JSON mode causes a 400 INVALID_ARGUMENT rejection.
+  const apiVersions = jsonMode ? ['v1beta'] : ['v1beta', 'v1'];
   let lastErrorText = '';
   let lastStatusCode = 0;
 
@@ -150,18 +152,32 @@ export async function callGemini(
           lastStatusCode = res.status;
           lastErrorText = await res.text();
 
-          // Invalid API Key (400) or Forbidden (403) is a terminal authentication issue
-          if (res.status === 400 || res.status === 403) {
+          // Only treat as fatal authorization failure if the key itself is rejected by Google
+          const isApiKeyInvalid =
+            res.status === 403 ||
+            (res.status === 400 &&
+              (lastErrorText.includes('API_KEY_INVALID') ||
+                lastErrorText.includes('API key not valid') ||
+                lastErrorText.includes('PERMISSION_DENIED')));
+
+          if (isApiKeyInvalid) {
             cachedGeminiModel = null;
             throw new Error(`Gemini API authorization failure (${res.status}): ${lastErrorText}`);
           }
 
-          // If the model had high demand (503), quota limits (429), or 404 (not supported on this endpoint),
-          // invalidate cached model and smoothly continue to the next model in the candidate list
+          // If the model had high demand (503) or rate limits (429), back off briefly
+          if (res.status === 503 || res.status === 429) {
+            console.warn(
+              `[Gemini Fallback] Model ${model} on ${ver} returned ${res.status} (High Demand). Shifting to alternative model...`
+            );
+            await new Promise((resolve) => setTimeout(resolve, 800));
+          } else {
+            console.warn(
+              `[Gemini Fallback] Model ${model} on ${ver} returned ${res.status}. Falling back to next candidate...`
+            );
+          }
+
           cachedGeminiModel = null;
-          console.warn(
-            `[Gemini Fallback] Model ${model} on ${ver} returned ${res.status}. Falling back to next candidate...`
-          );
         }
       } catch (err: any) {
         if (err.message?.includes('authorization failure')) {
