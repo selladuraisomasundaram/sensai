@@ -27,3 +27,4 @@ DO $$ BEGIN
   CREATE POLICY "Users insert own teach-backs" ON public.teach_back_submissions
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
