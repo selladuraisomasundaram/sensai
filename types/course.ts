@@ -223,3 +223,57 @@ export interface DojoSessionItem {
   is_new: boolean;
 }
 
+// ==========================================
+// Phase 3: Skill Map & Belt Exam Models
+// ==========================================
+
+export interface SkillMapConcept {
+  id: string;
+  name: string;
+  summary?: string;
+  start_sec: number;
+  end_sec: number;
+  course_id: string;
+  video_title: string;
+  youtube_url: string;
+  mastery_score: number;
+  status: 'mastered' | 'reinforcing' | 'at_risk' | 'unlearned';
+  interval_days: number;
+  repetitions: number;
+  due_at?: string;
+  last_reviewed_at?: string;
+}
+
+export interface SkillMapSummary {
+  concepts: SkillMapConcept[];
+  totalConcepts: number;
+  masteredCount: number;
+  reinforcingCount: number;
+  atRiskCount: number;
+  unlearnedCount: number;
+  retentionRate: number; // 0 to 100%
+  currentBelt: string;
+  nextBelt: string | null;
+  examReady: boolean;
+  requiredConcepts: number;
+}
+
+export interface BeltExamQuestion {
+  question_id: string;
+  concept_id: string;
+  concept_name: string;
+  prompt: string;
+  options: string[];
+  correct_answer: string;
+  explanation?: string;
+}
+
+export interface BeltExamSession {
+  exam_id: string;
+  target_rank: string;
+  questions: BeltExamQuestion[];
+  total_questions: number;
+  passing_score: number;
+  reward_xp: number;
+}
+

@@ -5,6 +5,10 @@ export interface RankTier {
   minXp: number;
   maxXp: number;
   description: string;
+  beltColor: string;
+  beltHex: string;
+  requiredMasteredConcepts: number;
+  examRewardXp: number;
 }
 
 export const RANKS: readonly RankTier[] = [
@@ -13,26 +17,55 @@ export const RANKS: readonly RankTier[] = [
     minXp: 0,
     maxXp: 100,
     description: 'Neophyte taking the first steps of digital discipline.',
+    beltColor: 'White Belt',
+    beltHex: '#e2e8f0', // slate-200
+    requiredMasteredConcepts: 0,
+    examRewardXp: 0,
   },
   {
     title: 'Ronin',
     minXp: 101,
     maxXp: 500,
     description: 'Wandering practitioner mastering core system fundamentals.',
+    beltColor: 'Green Belt',
+    beltHex: '#10b981', // emerald-500
+    requiredMasteredConcepts: 3,
+    examRewardXp: 100,
   },
   {
     title: 'Shinobi',
     minXp: 501,
     maxXp: 2000,
     description: 'Disciplined operative executing complex architectural trials.',
+    beltColor: 'Black Belt',
+    beltHex: '#18181b', // zinc-900
+    requiredMasteredConcepts: 8,
+    examRewardXp: 250,
   },
   {
     title: 'Sensai',
     minXp: 2001,
     maxXp: Infinity,
     description: 'Master of the decomposition craft.',
+    beltColor: 'Crimson Belt',
+    beltHex: '#dc2626', // red-600
+    requiredMasteredConcepts: 15,
+    examRewardXp: 500,
   },
 ] as const;
+
+export function getRankTier(title: string): RankTier {
+  return RANKS.find((r) => r.title === title) || RANKS[0];
+}
+
+export function getNextRankTitle(current: RankTitle): RankTitle | null {
+  const titles: RankTitle[] = ['Initiate', 'Ronin', 'Shinobi', 'Sensai'];
+  const idx = titles.indexOf(current);
+  if (idx >= 0 && idx < titles.length - 1) {
+    return titles[idx + 1];
+  }
+  return null;
+}
 
 export interface RankProgress {
   currentRank: RankTitle;

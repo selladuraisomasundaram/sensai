@@ -407,6 +407,14 @@ export default function SensaiDashboard() {
           </div>
 
           <div className="flex items-center space-x-3 text-xs">
+            <Link
+              href="/skill-map"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 border border-stone-300 dark:border-zinc-800 hover:border-stone-400 dark:hover:border-zinc-700 bg-stone-100 dark:bg-zinc-900 text-stone-700 dark:text-zinc-300 hover:text-stone-950 dark:hover:text-white transition-colors rounded-md font-ninja font-bold"
+            >
+              <Brain className="w-3.5 h-3.5 text-red-600 dark:text-red-500" />
+              <span className="text-[10px] uppercase font-bold tracking-wider">Skill Map</span>
+            </Link>
+
             <ThemeToggle />
 
             {user ? (
