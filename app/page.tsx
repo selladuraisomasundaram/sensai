@@ -6,6 +6,7 @@ import type { User } from '@supabase/supabase-js';
 import ApiKeyManager from '@/components/ApiKeyManager';
 import ProfileWidget from '@/components/ProfileWidget';
 import StealthSkeleton from '@/components/StealthSkeleton';
+import NinjaDojoGame from '@/components/NinjaDojoGame';
 import FeedbackModal from '@/components/FeedbackModal';
 import ThemeToggle from '@/components/ThemeToggle';
 import AuthModal from '@/components/AuthModal';
@@ -57,6 +58,7 @@ export default function SensaiDashboard() {
     currentTitle: string;
   } | null>(null);
   const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
+  const [loadingView, setLoadingView] = useState<'game' | 'skeleton'>('game');
 
   // Synchronize authentication session and streak metrics
   useEffect(() => {
@@ -575,14 +577,60 @@ export default function SensaiDashboard() {
             </button>
           </form>
 
-          {/* Stealth Skeletons displayed during processing */}
+          {/* Interactive Shinobi Focus Kata / Radar while loading */}
           {loading && (
-            <div className="mt-8 space-y-4 font-mono">
-              <div className="flex items-center space-x-2 text-xs text-stone-500 dark:text-zinc-500 uppercase tracking-widest font-ninja">
-                <Layers className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-400" />
-                <span>Assembling Curriculum Structure...</span>
+            <div className="mt-8 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-xs font-ninja tracking-widest uppercase text-red-600 dark:text-red-400 font-bold">
+                  <Flame className="w-3.5 h-3.5" />
+                  <span>Interactive Focus Chamber // Neural Buffer</span>
+                </div>
+
+                <div className="flex items-center space-x-1 border border-stone-200 dark:border-zinc-800 bg-stone-100 dark:bg-zinc-900 p-0.5 rounded-lg text-[10px] font-ninja">
+                  <button
+                    type="button"
+                    onClick={() => setLoadingView('game')}
+                    className={`px-2.5 py-1 rounded transition-all ${
+                      loadingView === 'game'
+                        ? 'bg-red-600 text-white font-bold'
+                        : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Flappy Shinobi
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLoadingView('skeleton')}
+                    className={`px-2.5 py-1 rounded transition-all ${
+                      loadingView === 'skeleton'
+                        ? 'bg-stone-800 text-white dark:bg-zinc-800 font-bold'
+                        : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Radar Log
+                  </button>
+                </div>
               </div>
-              <StealthSkeleton count={2} />
+
+              {loadingView === 'game' ? (
+                <NinjaDojoGame
+                  statusMessage={statusMessage || 'Sensei is deconstructing video in the background...'}
+                  onBonusXp={(bonusXp) => {
+                    toast.success(`Shinobi Focus Kata: +${bonusXp} XP Awarded!`);
+                    if (profile) {
+                      setProfile((prev) => (prev ? { ...prev, total_xp: (prev.total_xp || 0) + bonusXp } : prev));
+                    }
+                  }}
+                />
+              ) : (
+                <div className="space-y-4 font-mono">
+                  <div className="flex items-center space-x-2 text-xs text-stone-500 dark:text-zinc-500 uppercase tracking-widest font-ninja">
+                    <Layers className="w-3.5 h-3.5 text-stone-500 dark:text-zinc-400" />
+                    <span>Assembling Curriculum Structure...</span>
+                  </div>
+                  <StealthSkeleton count={2} />
+                </div>
+              )}
             </div>
           )}
 
