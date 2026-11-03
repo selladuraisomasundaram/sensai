@@ -37,7 +37,10 @@ import {
   FileText,
   Compass,
   Sparkles,
+  Brain,
 } from 'lucide-react';
+
+import TeachBackModal from '@/components/TeachBackModal';
 
 function formatSecondsToMMSS(seconds?: number): string {
   if (typeof seconds !== 'number' || isNaN(seconds)) return '00:00';
@@ -69,6 +72,7 @@ export default function KnowledgeScroll({
   const [copiedCodeIdx, setCopiedCodeIdx] = useState<number | null>(null);
   const [completedModules, setCompletedModules] = useState<Record<string | number, boolean>>({});
   const [isSubmittingProgress, setIsSubmittingProgress] = useState(false);
+  const [activeTeachBackConcept, setActiveTeachBackConcept] = useState<AtomicConcept | null>(null);
 
   // Initialize completed state from modules
   useEffect(() => {
@@ -452,15 +456,27 @@ export default function KnowledgeScroll({
                             )}
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() => onSeek(startSec)}
-                            className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border border-red-200 dark:border-red-950/60 bg-red-50/80 dark:bg-red-950/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-400 transition-all shadow-sm shrink-0 self-start sm:self-center"
-                            title={`Jump video player to ${formatSecondsToMMSS(startSec)}`}
-                          >
-                            <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
-                            <span>{formatSecondsToMMSS(startSec)} – {formatSecondsToMMSS(endSec)}</span>
-                          </button>
+                          <div className="flex items-center space-x-2 shrink-0 self-start sm:self-center">
+                            <button
+                              type="button"
+                              onClick={() => setActiveTeachBackConcept(concept)}
+                              className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-ninja uppercase tracking-wider rounded-lg border border-stone-300 dark:border-zinc-800 bg-white hover:bg-stone-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-300 hover:text-stone-950 dark:hover:text-white transition-all shadow-sm"
+                              title="Practice Feynman active recall explanation"
+                            >
+                              <Brain className="w-3 h-3 text-red-600 dark:text-red-400" />
+                              <span>Teach-Back</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => onSeek(startSec)}
+                              className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border border-red-200 dark:border-red-950/60 bg-red-50/80 dark:bg-red-950/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-400 transition-all shadow-sm"
+                              title={`Jump video player to ${formatSecondsToMMSS(startSec)}`}
+                            >
+                              <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
+                              <span>{formatSecondsToMMSS(startSec)} – {formatSecondsToMMSS(endSec)}</span>
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
@@ -526,15 +542,27 @@ export default function KnowledgeScroll({
                             )}
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() => onSeek(startSec)}
-                            className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border border-red-200 dark:border-red-950/60 bg-red-50/80 dark:bg-red-950/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-400 transition-all shadow-sm shrink-0 self-start sm:self-center"
-                            title={`Jump video player to ${formatSecondsToMMSS(startSec)}`}
-                          >
-                            <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
-                            <span>{formatSecondsToMMSS(startSec)} – {formatSecondsToMMSS(endSec)}</span>
-                          </button>
+                          <div className="flex items-center space-x-2 shrink-0 self-start sm:self-center">
+                            <button
+                              type="button"
+                              onClick={() => setActiveTeachBackConcept(concept)}
+                              className="inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-ninja uppercase tracking-wider rounded-lg border border-stone-300 dark:border-zinc-800 bg-white hover:bg-stone-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-300 hover:text-stone-950 dark:hover:text-white transition-all shadow-sm"
+                              title="Practice Feynman active recall explanation"
+                            >
+                              <Brain className="w-3 h-3 text-red-600 dark:text-red-400" />
+                              <span>Teach-Back</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => onSeek(startSec)}
+                              className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border border-red-200 dark:border-red-950/60 bg-red-50/80 dark:bg-red-950/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-400 transition-all shadow-sm"
+                              title={`Jump video player to ${formatSecondsToMMSS(startSec)}`}
+                            >
+                              <Play className="w-3 h-3 fill-current text-red-600 dark:text-red-500" />
+                              <span>{formatSecondsToMMSS(startSec)} – {formatSecondsToMMSS(endSec)}</span>
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
@@ -878,6 +906,26 @@ export default function KnowledgeScroll({
         {/* Bottom Scroll Cap Accent Line */}
         <div className="h-1 bg-gradient-to-r from-stone-300 via-red-600 to-stone-300 dark:from-zinc-800 dark:via-red-600/80 dark:to-zinc-800" />
       </section>
+
+      {/* Phase 4: Feynman Technique Teach-Back Modal */}
+      {activeTeachBackConcept && (
+        <TeachBackModal
+          isOpen={Boolean(activeTeachBackConcept)}
+          onClose={() => setActiveTeachBackConcept(null)}
+          conceptId={(activeTeachBackConcept as any).id || `mod-${currentModuleId}-${activeTeachBackConcept.name}`}
+          conceptName={activeTeachBackConcept.name}
+          conceptSummary={activeTeachBackConcept.summary}
+          startSec={activeTeachBackConcept.start_sec}
+          endSec={activeTeachBackConcept.end_sec}
+          courseId={currentModule.course_id}
+          videoTitle={currentModule.title}
+          onEvaluationComplete={(evalResult) => {
+            if (evalResult.newTotalXp && onProgressUpdated) {
+              onProgressUpdated(evalResult.newTotalXp);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

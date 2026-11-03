@@ -30,3 +30,4 @@ DO $$ BEGIN
   CREATE POLICY "Users insert own belt exams" ON public.belt_exams
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+

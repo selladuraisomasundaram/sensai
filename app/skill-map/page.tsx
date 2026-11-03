@@ -24,6 +24,7 @@ import {
   Play,
   RotateCcw,
 } from 'lucide-react';
+import TeachBackModal from '@/components/TeachBackModal';
 
 function formatSecondsToMMSS(seconds?: number): string {
   if (typeof seconds !== 'number' || isNaN(seconds)) return '00:00';
@@ -39,6 +40,7 @@ export default function SkillMapPage() {
   const [summary, setSummary] = useState<SkillMapSummary | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [selectedConcept, setSelectedConcept] = useState<SkillMapConcept | null>(null);
+  const [selectedTeachBackConcept, setSelectedTeachBackConcept] = useState<SkillMapConcept | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -341,15 +343,27 @@ export default function SkillMapPage() {
 
                     {/* Footer Actions & Interval Info */}
                     <div className="pt-2 border-t border-stone-100 dark:border-zinc-900 flex items-center justify-between text-xs">
-                      <Link
-                        href={`/course/${c.course_id}`}
-                        className="inline-flex items-center space-x-1.5 text-[11px] font-mono text-red-600 dark:text-red-400 hover:underline"
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>
-                          {formatSecondsToMMSS(c.start_sec)} – {formatSecondsToMMSS(c.end_sec)}
-                        </span>
-                      </Link>
+                      <div className="flex items-center space-x-2">
+                        <Link
+                          href={`/course/${c.course_id}`}
+                          className="inline-flex items-center space-x-1 text-[11px] font-mono text-red-600 dark:text-red-400 hover:underline"
+                        >
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>
+                            {formatSecondsToMMSS(c.start_sec)} – {formatSecondsToMMSS(c.end_sec)}
+                          </span>
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => setSelectedTeachBackConcept(c)}
+                          className="inline-flex items-center space-x-1 px-2 py-0.5 text-[10px] font-ninja uppercase tracking-wider rounded border border-stone-300 dark:border-zinc-800 bg-stone-50 hover:bg-stone-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-300 transition-colors"
+                          title="Feynman active recall challenge"
+                        >
+                          <Brain className="w-2.5 h-2.5 text-red-600 dark:text-red-400" />
+                          <span>Teach-Back</span>
+                        </button>
+                      </div>
 
                       <span className="font-mono text-[10px] text-stone-500 dark:text-zinc-500">
                         {c.repetitions > 0 ? `Streak: ${c.repetitions} reps` : 'Unreviewed'}
@@ -362,6 +376,39 @@ export default function SkillMapPage() {
           )}
         </section>
       </div>
+
+      {/* Teach-Back Feynman Modal */}
+      {selectedTeachBackConcept && (
+        <TeachBackModal
+          isOpen={Boolean(selectedTeachBackConcept)}
+          onClose={() => setSelectedTeachBackConcept(null)}
+          conceptId={selectedTeachBackConcept.id}
+          conceptName={selectedTeachBackConcept.name}
+          conceptSummary={selectedTeachBackConcept.summary}
+          startSec={selectedTeachBackConcept.start_sec}
+          endSec={selectedTeachBackConcept.end_sec}
+          courseId={selectedTeachBackConcept.course_id}
+          videoTitle={selectedTeachBackConcept.video_title}
+          onEvaluationComplete={(evalResult) => {
+            // Update local state mastery for instant feedback
+            setSummary((prev) => {
+              if (!prev) return prev;
+              const updated = prev.concepts.map((item) => {
+                if (item.id === selectedTeachBackConcept.id) {
+                  return {
+                    ...item,
+                    mastery_score: evalResult.accuracy_score,
+                    status: evalResult.accuracy_score >= 70 ? ('mastered' as const) : ('reinforcing' as const),
+                  };
+                }
+                return item;
+              });
+              return { ...prev, concepts: updated };
+            });
+          }}
+        />
+      )}
     </main>
   );
 }
+

@@ -277,3 +277,34 @@ export interface BeltExamSession {
   reward_xp: number;
 }
 
+// ==========================================
+// Phase 4: Teach-Back Mode (Feynman Technique)
+// ==========================================
+
+export interface TeachBackEvaluation {
+  accuracy_score: number; // 0 to 100
+  grade: number; // 0 to 5 for SM-2
+  mastery_verdict: 'Mastered' | 'Solid Understanding' | 'Partial Understanding' | 'Critical Gaps';
+  strengths: string[];
+  knowledge_gaps: string[];
+  sensei_coaching: string;
+  simplified_analogy: string;
+  earnedXp: number;
+  newTotalXp?: number;
+  rankProgress?: any;
+}
+
+export interface TeachBackSubmissionRow {
+  id: string;
+  user_id: string;
+  concept_id: string;
+  explanation: string;
+  accuracy_score: number;
+  strengths: string[];
+  knowledge_gaps: string[];
+  sensei_coaching?: string;
+  simplified_analogy?: string;
+  created_at?: string;
+}
+
+

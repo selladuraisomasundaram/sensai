@@ -26,6 +26,7 @@ import {
   ShieldCheck,
   AlertTriangle,
 } from 'lucide-react';
+import TeachBackModal from '@/components/TeachBackModal';
 
 function extractVideoId(url: string): string {
   const match = url?.match(
@@ -51,6 +52,7 @@ export default function DojoSessionPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showRewatchVideo, setShowRewatchVideo] = useState(false);
+  const [teachBackOpen, setTeachBackOpen] = useState(false);
 
   // Session aggregate metrics
   const [sessionCompleted, setSessionCompleted] = useState(false);
@@ -379,10 +381,22 @@ export default function DojoSessionPage() {
           {/* Drill Concept Metadata */}
           <div className="p-5 sm:p-6 border-b border-stone-200 dark:border-zinc-800/80 bg-stone-50/60 dark:bg-zinc-900/30 space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 font-mono text-[10px] font-bold uppercase tracking-wider">
-                <Brain className="w-3 h-3" />
-                <span>Concept Recall</span>
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 font-mono text-[10px] font-bold uppercase tracking-wider">
+                  <Brain className="w-3 h-3" />
+                  <span>Concept Recall</span>
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setTeachBackOpen(true)}
+                  className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded border border-stone-300 dark:border-zinc-800 bg-white hover:bg-stone-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-300 text-[10px] font-ninja font-bold uppercase tracking-wider shadow-sm transition-all"
+                  title="Explain this concept in your own words (Feynman Technique)"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-500" />
+                  <span>Feynman Teach-Back</span>
+                </button>
+              </div>
 
               <span className="font-mono text-xs text-stone-500 dark:text-zinc-500 truncate max-w-[200px] sm:max-w-xs">
                 {currentItem.video_title}
@@ -595,6 +609,31 @@ export default function DojoSessionPage() {
           </div>
         </div>
       </div>
+
+      {/* Feynman Teach-Back Mode Modal */}
+      {teachBackOpen && currentItem && (
+        <TeachBackModal
+          isOpen={teachBackOpen}
+          onClose={() => setTeachBackOpen(false)}
+          conceptId={currentItem.concept_id}
+          conceptName={currentItem.concept_name}
+          conceptSummary={currentItem.concept_summary}
+          startSec={currentItem.start_sec}
+          endSec={currentItem.end_sec}
+          courseId={currentItem.course_id}
+          videoTitle={currentItem.video_title}
+          onEvaluationComplete={(evalResult) => {
+            setSm2Feedback({
+              intervalDays: evalResult.grade >= 3 ? 6 : 1,
+              masteryScore: evalResult.accuracy_score,
+              earnedXp: evalResult.earnedXp,
+            });
+            setTotalXpEarned((prev) => prev + evalResult.earnedXp);
+            setIsSubmitted(true);
+            setTeachBackOpen(false);
+          }}
+        />
+      )}
     </main>
   );
 }
