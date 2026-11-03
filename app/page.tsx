@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
 import ApiKeyManager from '@/components/ApiKeyManager';
 import ProfileWidget from '@/components/ProfileWidget';
@@ -20,6 +21,7 @@ import {
   CheckCircle2,
   ArrowRight,
   Swords,
+  Brain,
   ListVideo,
   Layers,
   LogIn,
@@ -456,6 +458,32 @@ export default function SensaiDashboard() {
             />
           </section>
         )}
+
+        {/* Daily Dojo Spaced-Repetition Training Session Portal */}
+        <section className="relative overflow-hidden border border-red-200 dark:border-red-950/60 bg-gradient-to-r from-red-50 via-white to-red-50 dark:from-red-950/20 dark:via-zinc-950 dark:to-red-950/20 p-5 rounded-2xl shadow-sm transition-all hover:border-red-400 dark:hover:border-red-700/60 group">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center space-x-2 text-xs font-ninja tracking-widest uppercase text-red-600 dark:text-red-500 font-bold">
+                <Brain className="w-4 h-4" />
+                <span>Daily Dojo Session // Spaced Repetition</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black font-ninja text-stone-900 dark:text-white tracking-tight">
+                Train Aging Concepts &amp; Reinforce Recall
+              </h3>
+              <p className="text-xs text-stone-600 dark:text-zinc-400 font-sans leading-relaxed max-w-lg">
+                Stop forgetting YouTube insights. Take a 5-minute active recall drill across your decomposed courses with SuperMemo-2 spaced repetition and in-video checkpoints.
+              </p>
+            </div>
+
+            <Link
+              href="/dojo"
+              className="inline-flex items-center justify-center space-x-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-ninja text-xs font-bold uppercase tracking-wider transition-all shadow-md group-hover:scale-105 active:scale-95 shrink-0"
+            >
+              <Swords className="w-4 h-4" />
+              <span>Enter Daily Dojo &rarr;</span>
+            </Link>
+          </div>
+        </section>
 
         {/* Bring-Your-Own-Key Interface */}
         <section>

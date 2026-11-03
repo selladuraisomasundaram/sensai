@@ -73,3 +73,28 @@ export function calculateSM2({
     masteryScore,
   };
 }
+
+/**
+ * Calculates SM-2 grade (0 to 5) from answer accuracy and elapsed response time.
+ */
+export function calculateGradeFromResponse(wasCorrect: boolean, responseTimeMs: number = 0): number {
+  if (!wasCorrect) {
+    return responseTimeMs > 4000 ? 1 : 0;
+  }
+  if (responseTimeMs > 0 && responseTimeMs <= 10000) {
+    return 5; // Fast & confident recall (< 10 seconds)
+  }
+  if (responseTimeMs > 10000 && responseTimeMs <= 25000) {
+    return 4; // Moderate hesitation
+  }
+  return 3; // Correct with effort
+}
+
+/**
+ * Checks whether a concept review is due now or in the past.
+ */
+export function isReviewDue(dueAt?: string | Date | null): boolean {
+  if (!dueAt) return true;
+  return new Date(dueAt).getTime() <= Date.now();
+}
+

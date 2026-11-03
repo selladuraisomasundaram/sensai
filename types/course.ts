@@ -202,3 +202,24 @@ export interface ReviewLogRow {
   reviewed_at?: string;
 }
 
+export interface DojoSessionItem {
+  concept_id: string;
+  concept_name: string;
+  concept_summary?: string;
+  start_sec: number;
+  end_sec: number;
+  course_id: string;
+  video_url: string;
+  video_title: string;
+  question_id?: string;
+  question: string;
+  options: string[];
+  correct_answer: string;
+  explanation?: string;
+  current_mastery: number; // 0 to 100%
+  ease_factor: number;
+  interval_days: number;
+  repetitions: number;
+  is_new: boolean;
+}
+
